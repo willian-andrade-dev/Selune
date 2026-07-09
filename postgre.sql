@@ -1,0 +1,72 @@
+CREATE TABLE IF NOT EXISTS players(
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	hp INTEGER NOT NULL,
+	hp_maximo INTEGER NOT NULL,
+	mana INTEGER NOT NULL,
+	gold INTEGER NOT NULL,
+	xp INTEGER NOT NULL,
+	xp_para_upar INTEGER NOT NULL,
+	level INTEGER NOT NULL,
+	ataque_base INTEGER NOT NULL,
+	ataque INTEGER NOT NULL,
+	armadura INTEGER NOT NULL,
+	armadura_base INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS monsters(
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	hp INTEGER NOT NULL,
+	loot VARCHAR(50) NOT NULL,
+	ataque INTEGER NOT NULL,
+	xp  INTEGER NOT NULL,
+	ouro INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS items(
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	valor INTEGER NOT NULL,
+	descricao VARCHAR(50) NOT NULL,
+	armadura INTEGER,
+	dano INTEGER,
+	funcao VARCHAR(50),
+	propriedade VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS locations(
+	id SERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL,
+	dificuldade INTEGER NOT NULL,
+	regiao VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS inventory(
+	id SERIAL PRIMARY KEY,
+	quantidade INTEGER NOT NULL DEFAULT 1,
+
+	players_id INTEGER NOT NULL,
+	item_id INTEGER NOT NULL,
+
+	FOREIGN KEY(players_id)
+		REFERENCES players(id),
+
+	FOREIGN KEY(item_id)
+		REFERENCES items(id)
+);
+
+CREATE TABLE IF NOT EXISTS monster_locations (
+    id SERIAL PRIMARY KEY,
+    monster_id INTEGER NOT NULL,
+    location_id INTEGER NOT NULL,
+
+    FOREIGN KEY (monster_id)
+        REFERENCES monsters(id),
+
+    FOREIGN KEY (location_id)
+        REFERENCES locations(id)
+);
+
+SELECT * FROM players;
+SELECT * FROM inventory;
