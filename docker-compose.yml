@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16
+    container_name: selune_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rpg_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - selune_data:/var/lib/postgresql/data
+      - ./postgre.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app:
+    build: .
+    container_name: selune_app
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: rpg_database
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
+
+volumes:
+  selune_data:

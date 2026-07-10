@@ -10,7 +10,7 @@ Projeto desenvolvido como estudo prático de Programação Orientada a Objetos, 
 - **PostgreSQL** — persistência de dados (players, monstros, itens, localizações, inventário)
 - **psycopg2** — driver de conexão Python ↔ PostgreSQL
 - **python-dotenv** — gerenciamento seguro de credenciais via variáveis de ambiente
-- **Docker** *(em progresso)* — containerização da aplicação e do banco
+- **Docker** — containerização da aplicação e do banco
 
 ## Estrutura do projeto
 
@@ -114,14 +114,15 @@ python main.py
 ## Prints
 
 ### Menu Principal
-
+![Menu principal do jogo](Menu_principal.png)
 ### Combate
-
+![Tela de combate](Combate.png)
 ### Inventário
+![Inventário do jogador](Inventario.png)
+
 
 ## Roadmap
 
 Projeto em desenvolvimento contínuo. Próximos passos incluem:
-- Containerização com Docker
 - Sistema de loja, NPCs e crafting
 - Logs de combate para análise de dados (Spark, Airflow, dbt)
