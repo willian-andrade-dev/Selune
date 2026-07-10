@@ -113,7 +113,11 @@ python main.py
 
 ## Prints
 
+### Menu Principal
 
+### Combate
+
+### Inventário
 
 ## Roadmap
 
