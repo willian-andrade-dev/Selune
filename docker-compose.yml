@@ -8,24 +8,28 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - selune_data:/var/lib/postgresql/data
       - ./postgre.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   app:
     build: .
     container_name: selune_app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     stdin_open: true
     tty: true
+    env_file:
+      - .env
     environment:
       DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: rpg_database
-      DB_USER: postgres
-      DB_PASSWORD: ${DB_PASSWORD}
 
 volumes:
   selune_data:

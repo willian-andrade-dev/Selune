@@ -1,7 +1,7 @@
 from Database.connection import conectar
 from Entities.monster import Monstro
 
-def criar_monstro(nome, hp, loot_item_id, ataque, xp, ouro, location_ids):
+def criar_monstro(nome: str, hp: int, loot_item_id: int, ataque: int, xp: int, ouro: int, location_ids: list) -> int:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -34,7 +34,7 @@ def criar_monstro(nome, hp, loot_item_id, ataque, xp, ouro, location_ids):
 
     return monster_id
 
-def carregar_monstros(itens):
+def carregar_monstros(itens: dict) -> list:
     conexao = conectar()
     cursor = conexao.cursor()
     cursor.execute("SELECT id, nome, hp, loot_item_id, ataque, xp, ouro FROM monsters")

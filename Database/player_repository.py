@@ -1,7 +1,8 @@
+from typing import Optional
 from Database.connection import conectar
 from Entities.player import Player
 
-def criar_player(nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base):
+def criar_player(nome: str, hp: int, hp_maximo: int, mana: int, gold: int, xp: int, xp_para_upar: int, level: int, ataque_base: int, ataque: int, armadura: int, armadura_base: int) -> int:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -19,7 +20,7 @@ def criar_player(nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataqu
 
     return player_id
 
-def buscar_player(id_player):
+def buscar_player(id_player: int) -> Optional[Player]:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -41,7 +42,7 @@ def buscar_player(id_player):
     player.armadura = armadura
     return player
 
-def update_player(id_player, gold, level, xp):
+def update_player(id_player: int, gold: int, level: int, xp: int) -> None:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -55,7 +56,7 @@ def update_player(id_player, gold, level, xp):
     cursor.close()
     conexao.close()
 
-def delete_player(id_player):
+def delete_player(id_player: int) -> None:
     player = buscar_player(id_player)
     if player is None:
         print("Player não encontrado, nada foi deletado.")
@@ -69,7 +70,7 @@ def delete_player(id_player):
     conexao.close()
     print(f"{player.nome} foi deletado.")
 
-def salvar_player(player, player_id):
+def salvar_player(player: Player, player_id: int) -> None:
     conexao = conectar()
     cursor = conexao.cursor()
 

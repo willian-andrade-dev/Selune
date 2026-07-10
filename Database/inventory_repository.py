@@ -1,6 +1,6 @@
 from Database.connection import conectar
 
-def adicionar_item_inventario(player_id, item_id, quantidade=1):
+def adicionar_item_inventario(player_id: int, item_id: int, quantidade: int=1) -> None:
     conexao = conectar()
     cursor = conexao.cursor()
 

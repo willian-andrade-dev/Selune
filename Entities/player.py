@@ -1,8 +1,16 @@
+from typing import TYPE_CHECKING
 from Entities.inventory import Inventory
 from Entities.equipment import Equipment
 
+if TYPE_CHECKING:
+    from Entities.monster import Monstro
+
+
+
+
+
 class Player:
-    def __init__(self, nome, hp, mana, gold, xp, level, ataque, armadura):
+    def __init__(self: 'Player', nome: str, hp: int, mana: int, gold: int, xp: int, level: int, ataque: int, armadura: int) -> None:
         self.id = None
         self.nome = nome
         self.hp_maximo = hp
@@ -22,12 +30,12 @@ class Player:
     def __str__(self):
         return f"{self.nome} | Level {self.level} | HP: {self.hp}/{self.hp_maximo} | XP: {self.xp}"
 
-    def Attack(self, monstro):
+    def atacar(self: 'Player', monstro: 'Monstro') -> None:
         print(f"HP: {monstro.hp}, Ataque: {monstro.ataque}")
         monstro.hp = monstro.hp - self.ataque
         print(f"{monstro.nome} HP: {monstro.hp}")
 
-    def Show_status(self):
+    def mostrar_status(self: 'Player') -> None:
         print(f"Nome: {self.nome}") 
         print(f"HP Atual: {self.hp}") 
         print(f"HP Máximo {self.hp_maximo}")
@@ -40,7 +48,7 @@ class Player:
         print(f"Level: {self.level}")
 
 
-    def Heal(self):
+    def curar(self: 'Player') -> None:
         if self.hp >= self.hp_maximo:
             print("Você já está full life")
         else:
@@ -49,7 +57,7 @@ class Player:
             curado = self.hp - hp_antes
             print(f"{self.nome} utilizou uma poção de cura, +{curado} de HP. HP atual: {self.hp}")
 
-    def atualizar_status(self):
+    def atualizar_status(self: 'Player') -> None:
         self.ataque = self.ataque_base
         if self.equipamento.arma is not None:
             self.ataque += self.equipamento.arma.dano
@@ -58,7 +66,7 @@ class Player:
         if self.equipamento.armadura is not None:
             self.armadura += self.equipamento.armadura.armadura
 
-    def level_up(self):
+    def subir_nivel(self: 'Player') -> None:
         while self.xp >= self.xp_para_upar:
             self.xp -= self.xp_para_upar
             self.level += 1

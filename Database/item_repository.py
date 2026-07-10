@@ -1,7 +1,7 @@
 from Database.connection import conectar
 from Entities.item import Weapon, Armadura, Consumivel, Loot
 
-def criar_item(nome, tipo, valor, descricao, armadura=None, dano=None, funcao=None, propriedade=None):
+def criar_item(nome: str, tipo: str, valor: int, descricao: str, armadura: int=None, dano: int=None, funcao: str=None, propriedade: str=None) -> int:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -29,7 +29,7 @@ def criar_item(nome, tipo, valor, descricao, armadura=None, dano=None, funcao=No
 
     return item_id
 
-def carregar_itens():
+def carregar_itens() -> dict:
     conexao = conectar()
     cursor = conexao.cursor()
     cursor.execute("SELECT id, nome, tipo, valor, descricao, armadura, dano, funcao, propriedade FROM items")

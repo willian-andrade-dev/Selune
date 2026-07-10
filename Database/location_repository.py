@@ -1,7 +1,7 @@
 from Database.connection import conectar
 from World.location import Localização
 
-def criar_localizacao(nome, dificuldade, regiao):
+def criar_localizacao(nome: str, dificuldade: int, regiao: str) -> int:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -28,7 +28,7 @@ def criar_localizacao(nome, dificuldade, regiao):
 
     return location_id
 
-def carregar_localizacoes():
+def carregar_localizacoes() -> list:
     conexao = conectar()
     cursor = conexao.cursor()
     cursor.execute("SELECT id, nome, dificuldade, regiao FROM locations")

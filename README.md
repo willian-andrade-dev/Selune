@@ -100,6 +100,35 @@ python -m Database.seed
 
 python main.py
 
+## Como executar (com Docker)
+
+Alternativa mais rápida ao setup manual — sobe o jogo e o PostgreSQL juntos, sem precisar instalar Postgres localmente.
+
+### Pré-requisitos
+- Docker e Docker Compose instalados
+
+### 1. Clone o repositório
+
+git clone https://github.com/seu-usuario/Selune.git
+cd Selune
+
+### 2. Configure as variáveis de ambiente
+
+cp .env.example .env
+
+Edite o `.env` e defina ao menos a `DB_PASSWORD` (as outras variáveis já têm valores compatíveis com o Docker Compose).
+
+### 3. Suba os containers
+
+docker compose up --build
+
+Isso cria o banco PostgreSQL, executa `postgre.sql` automaticamente (criando as tabelas) e inicia o jogo.
+
+### 4. Popule os dados iniciais (em outro terminal, com os containers rodando)
+
+docker compose exec app python -m Database.seed
+
+
 ## Funcionalidades
 
 - Criação e login de personagem (progresso salvo no banco)
