@@ -128,6 +128,11 @@ Isso cria o banco PostgreSQL, executa `postgre.sql` automaticamente (criando as 
 
 docker compose exec app python -m Database.seed
 
+**Nota:** se estiver usando a extensão Docker do VSCode e o painel de logs não aceitar input do teclado, use:
+
+    docker compose up --build -d
+    docker attach selune_app
+
 
 ## Funcionalidades
 
