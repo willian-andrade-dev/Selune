@@ -27,3 +27,21 @@ def adicionar_item_inventario(player_id: int, item_id: int, quantidade: int=1) -
     cursor.close()
     conexao.close()
 
+def carregar_inventario_jogador(player_id: int, itens: dict) -> list:
+    conexao = conectar()
+    cursor = conexao.cursor()
+    cursor.execute("""
+        SELECT item_id, quantidade FROM inventory WHERE player_id = %s
+    """, (player_id,))
+    linhas = cursor.fetchall()
+    cursor.close()
+    conexao.close()
+
+    itens_carregados = []
+    for item_id, quantidade in linhas:
+        item = itens.get(item_id)
+        if item is not None:
+            for _ in range(quantidade):
+                itens_carregados.append(item)
+    return itens_carregados
+

@@ -4,7 +4,7 @@ from Database.player_repository import criar_player, buscar_player, salvar_playe
 from Database.item_repository import carregar_itens
 from Database.monster_repository import carregar_monstros
 from Database.location_repository import carregar_localizacoes
-from Database.inventory_repository import adicionar_item_inventario
+from Database.inventory_repository import adicionar_item_inventario, carregar_inventario_jogador
 import random
 import os
 import copy
@@ -53,6 +53,7 @@ class Game:
                 if player is None:
                     print("Personagem não encontrado.")
                     continue
+                player.inventario.itens = carregar_inventario_jogador(player_id, self.itens)
                 print(f"Bem-vindo de volta, {player.nome}!")
 
             elif opcao_inicial == 3:

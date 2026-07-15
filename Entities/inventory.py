@@ -1,5 +1,5 @@
 from Entities.item import Item
-
+from collections import Counter
 
 class Inventory:
     def __init__(self: 'Inventory') -> None:
@@ -13,8 +13,15 @@ class Inventory:
             print("Seu inventário está vazio")
         else:
             print("==== INVENTÁRIO ===")
+            contagem = Counter(item.nome for item in self.itens)
+            ja_mostrados = set()
+
             for item in self.itens:
-                print(item)
+                if item.nome in ja_mostrados:
+                    continue
+                ja_mostrados.add(item.nome)
+                quantidade = contagem[item.nome]
+                print(f"{item} x{quantidade}")
 
     def procurar_item(self: 'Inventory', nome: str) -> 'Item':
         for item in self.itens:
