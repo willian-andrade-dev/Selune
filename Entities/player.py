@@ -5,10 +5,6 @@ from Entities.equipment import Equipment
 if TYPE_CHECKING:
     from Entities.monster import Monstro
 
-
-
-
-
 class Player:
     def __init__(self: 'Player', nome: str, hp: int, mana: int, gold: int, xp: int, level: int, ataque: int, armadura: int) -> None:
         self.id = None

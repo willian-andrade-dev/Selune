@@ -76,3 +76,18 @@ CREATE TABLE IF NOT EXISTS monster_locations (
     FOREIGN KEY (location_id)
         REFERENCES locations(id)
 );
+
+CREATE TABLE IF NOT EXISTS combat_logs(
+    id SERIAL PRIMARY KEY,
+    player_id INTEGER NOT NULL,
+    monster_id INTEGER NOT NULL,
+    xp_ganho INTEGER NOT NULL,
+    gold_ganho INTEGER NOT NULL,
+    vitoria BOOLEAN NOT NULL,
+    duracao_ms INTEGER NOT NULL,
+    data_hora TIMESTAMP NOT NULL DEFAULT NOW(),
+
+    FOREIGN KEY (player_id) REFERENCES players(id),
+    FOREIGN KEY (monster_id) REFERENCES monsters(id)
+);
+

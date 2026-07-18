@@ -47,6 +47,7 @@ def carregar_monstros(itens: dict) -> list:
         id, nome, hp, loot_item_id, ataque, xp, ouro = linha
         loot = itens.get(loot_item_id)  # pega o objeto Item já carregado, ou None
         monstro = Monstro(nome, hp, loot, ataque, xp, ouro)
+        monstro.id = id
         monstros.append(monstro)
 
     return monstros
