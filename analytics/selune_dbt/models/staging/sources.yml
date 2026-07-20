@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: selune
+    schema: public
+    tables:
+      - name: combat_logs
+        columns:
+          - name: id
+            tests:
+              - unique
+              - not_null
+          - name: player_id
+            tests:
+              - not_null
+          - name: monster_id
+            tests:
+              - not_null
+          - name: vitoria
+            tests:
+              - not_null
+      - name: monsters
+      - name: players
