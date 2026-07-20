@@ -13,6 +13,7 @@ class Monstro:
         self.xp = xp
         self.ouro = ouro
 
-    def atacar(self: 'Monstro', player: 'Player') -> None:
-        player.hp = player.hp - self.ataque
+    def atacar(self, player):
+        dano_reduzido = max(self.ataque - player.armadura, 1)
+        player.hp = player.hp - dano_reduzido
         print(f"Player HP: {player.hp}")
