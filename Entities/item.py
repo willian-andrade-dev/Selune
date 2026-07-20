@@ -1,3 +1,4 @@
+from Database.inventory_repository import remover_item_inventario
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -49,6 +50,8 @@ class Consumivel(Item):
         
         else:
             player.curar()
+            player.inventario.remover_item(self)
+            remover_item_inventario(player.id, self.id, 1)
 
 class Acessorio(Item):
     tipo = 'Acessorio'

@@ -18,6 +18,30 @@ class Game:
     def limpar_tela(self: 'Game') -> None:
         os.system('cls' if os.name == 'nt' else 'clear')
 
+    def menu_inventario(self, player, player_id):
+        while True:
+            if not player.inventario.itens:
+                print("Seu inventário está vazio.")
+                input("\nPressione Enter para voltar...")
+                return  # sai direto, nem mostra o sub-menu
+
+            player.inventario.mostrar_inventario()
+            print("\n1 - Usar/Equipar um item")
+            print("2 - Voltar")
+            escolha = self.ler_opcao("Escolha uma opção: ", 1, 2)
+
+            if escolha == 1:
+                nome_item = input("Nome do item: ")
+                item = player.inventario.procurar_item(nome_item)
+                if item is None:
+                    print("Item não encontrado.")
+                else:
+                    item.use(player)
+                    salvar_player(player, player_id)
+                input("\nPressione Enter para continuar...")
+            else:
+                break
+
     def ler_opcao(self: 'Game', mensagem: str, minimo: int, maximo: int) -> int:
         while True:
             try:
@@ -71,7 +95,7 @@ class Game:
                 print("1 - Mostrar status")
                 print("2 - Atacar criatura")
                 print("3 - Se curar")
-                print("4 - Mostrar inventário")
+                print("4 - Inventário")
                 print("5 - Log Out")
                 option = self.ler_opcao("Escolha uma opção: ", 1, 5)
 
@@ -93,8 +117,7 @@ class Game:
                     input("\nPressione Enter para continuar...")
 
                 elif option == 4:
-                    player.inventario.mostrar_inventario()
-                    input("\nPressione Enter para continuar...")
+                    self.menu_inventario(player, player_id)
 
                 elif option == 5:
                     print(f"See you later, {player.nome}")

@@ -11,17 +11,18 @@ class Inventory:
     def mostrar_inventario(self: 'Inventory') -> None:
         if not self.itens:
             print("Seu inventário está vazio")
-        else:
-            print("==== INVENTÁRIO ===")
-            contagem = Counter(item.nome for item in self.itens)
-            ja_mostrados = set()
+            return
 
-            for item in self.itens:
-                if item.nome in ja_mostrados:
-                    continue
-                ja_mostrados.add(item.nome)
-                quantidade = contagem[item.nome]
-                print(f"{item} x{quantidade}")
+        print("==== INVENTÁRIO ===")
+        contagem = Counter(item.nome for item in self.itens)
+        ja_mostrados = set()
+
+        for item in self.itens:
+            if item.nome in ja_mostrados:
+                continue
+            ja_mostrados.add(item.nome)
+            quantidade = contagem[item.nome]
+            print(f"{item} x{quantidade}")
 
     def procurar_item(self: 'Inventory', nome: str) -> 'Item':
         for item in self.itens:
