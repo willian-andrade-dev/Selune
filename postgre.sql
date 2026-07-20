@@ -91,3 +91,5 @@ CREATE TABLE IF NOT EXISTS combat_logs(
     FOREIGN KEY (monster_id) REFERENCES monsters(id)
 );
 
+
+SELECT * FROM monster_stats;
