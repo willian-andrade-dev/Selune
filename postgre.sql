@@ -92,4 +92,5 @@ CREATE TABLE IF NOT EXISTS combat_logs(
 );
 
 
-SELECT * FROM monster_stats;
+
+
