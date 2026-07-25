@@ -96,8 +96,6 @@ class Combat:
             self.monstro.atacar(self.player)
             self.player.atualizar_buffs_turno()
 
-            self.monstro.atacar(self.player)
-
         duracao = int((time.time() - inicio) * 1000)
         venceu = self.player.hp > 0
 
