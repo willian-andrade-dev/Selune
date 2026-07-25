@@ -724,3 +724,10 @@ INSERT INTO habilidades (classe_id, nome, descricao, nivel_requerido, custo_mana
 ((SELECT id FROM classes WHERE nome='Arqueiro'), 'Chuva de Flechas', 'Múltiplos disparos rápidos.', 5, 10, 'dano', 24, 0),
 ((SELECT id FROM classes WHERE nome='Arqueiro'), 'Foco Predatório', 'Aumenta o ataque por alguns turnos.', 10, 10, 'buff_ataque', 8, 3),
 ((SELECT id FROM classes WHERE nome='Arqueiro'), 'Tiro Perfurante', 'Um disparo que ignora parte da armadura.', 15, 16, 'dano', 40, 0);
+
+-- ================= ITEMS: ARMAS INICIAIS =================
+INSERT INTO items (nome, tipo, valor, nivel_requerido, raridade, descricao, dano) VALUES
+('Espada de Treino', 'Arma', 25, 1, 'Comum', 'Espada básica usada por guerreiros novatos.', 5),
+('Cajado Iniciante', 'Arma', 25, 1, 'Comum', 'Cajado simples que canaliza magia básica.', 6),
+('Arco Curto', 'Arma', 25, 1, 'Comum', 'Arco leve usado por arqueiros iniciantes.', 5),
+('Talismã Sagrado', 'Arma', 25, 1, 'Comum', 'Talismã abençoado usado por clérigos novatos.', 4);

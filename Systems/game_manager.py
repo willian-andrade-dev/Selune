@@ -1,16 +1,16 @@
 from Entities.player import Player
 from Systems.combat import Combat
 from Systems.shop import Shop
-from Database.player_repository import criar_player, buscar_player, salvar_player
+from Database.player_repository import buscar_player, salvar_player
 from Database.item_repository import carregar_itens
 from Database.monster_repository import carregar_monstros
 from Database.location_repository import carregar_localizacoes
-from Database.inventory_repository import adicionar_item_inventario, carregar_inventario_jogador
+from Database.inventory_repository import carregar_inventario_jogador
 from Database.class_repository import carregar_classes, carregar_habilidades
 from World.location import Localização
-import random
+from Systems.exploration import Exploration
+from Systems.character_creation import CharacterCreation
 import os
-import copy
 
 from typing import TYPE_CHECKING
 
@@ -25,6 +25,8 @@ class Game:
         self.localizacoes = carregar_localizacoes()
         self.classes = carregar_classes()
         self.habilidades = carregar_habilidades()
+        self.exploration = Exploration(self.localizacoes, self.monstros)
+        self.character_creation = CharacterCreation(self.itens)
 
     def limpar_tela(self: 'Game') -> None:
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -41,7 +43,7 @@ class Game:
             if not player.inventario.itens:
                 print("Seu inventário está vazio.")
                 input("\nPressione Enter para voltar...")
-                return  # sai direto, nem mostra o sub-menu
+                return
 
             player.inventario.mostrar_inventario()
             print("\n1 - Usar/Equipar um item")
@@ -61,7 +63,7 @@ class Game:
                 break
 
     def selecionar_localizacao(self: 'Game') -> 'Localização':
-        localizacoes_ordenadas = sorted(self.localizacoes, key=lambda loc: loc.dificuldade)
+        localizacoes_ordenadas = self.exploration.localizacoes_ordenadas()
 
         print("\n=== LOCALIZAÇÕES ===")
         for i, loc in enumerate(localizacoes_ordenadas, start=1):
@@ -73,14 +75,11 @@ class Game:
             return None
         return localizacoes_ordenadas[escolha - 1]
 
-    def monstros_da_localizacao(self: 'Game', localizacao: 'Localização') -> list:
-        return [m for m in self.monstros if localizacao.id in m.location_ids]
-
     def menu_explorar(self: 'Game', player: 'Player', player_id: int) -> None:
         while True:
             self.limpar_tela()
             print("1 - Localizações")
-            print("2 - Se curar")
+            print("2 - Usar poção")
             print("3 - Voltar")
             escolha = self.ler_opcao("Escolha uma opção: ", 1, 3)
 
@@ -89,20 +88,19 @@ class Game:
                 if localizacao is None:
                     continue
 
-                monstros_disponiveis = self.monstros_da_localizacao(localizacao)
-                if not monstros_disponiveis:
+                monstro_escolhido = self.exploration.sortear_monstro(localizacao)
+                if monstro_escolhido is None:
                     print(f"Nenhum monstro encontrado em {localizacao.nome}.")
                     input("\nPressione Enter para continuar...")
                     continue
 
-                monstro_escolhido = copy.deepcopy(random.choice(monstros_disponiveis))
                 combate = Combat(player, monstro_escolhido, localizacao, self.habilidades)
                 combate.start()
                 salvar_player(player, player_id)
                 input("\nPressione Enter para continuar...")
 
             elif escolha == 2:
-                player.usar_pocao_cura(lambda mi, ma: self.ler_opcao("Escolha uma opção: ", mi, ma))
+                player.usar_pocao(lambda mi, ma: self.ler_opcao("Escolha uma opção: ", mi, ma))
                 salvar_player(player, player_id)
                 input("\nPressione Enter para continuar...")
 
@@ -113,13 +111,9 @@ class Game:
         while True:
             try:
                 valor = int(input(mensagem))
-
                 if minimo <= valor <= maximo:
                     return valor
-                
                 print(f"Digite um número entre {minimo} e {maximo}.")
-            
-
             except ValueError:
                 print("Digite apenas números.")
 
@@ -134,14 +128,7 @@ class Game:
             if opcao_inicial == 1:
                 nome = input("Nome do personagem: ")
                 classe_escolhida = self.selecionar_classe()
-                player_id = criar_player(
-                    nome, classe_escolhida.hp_base, classe_escolhida.hp_base, classe_escolhida.mana_base,
-                    15, 0, 75, 1, classe_escolhida.ataque_base, classe_escolhida.ataque_base,
-                    classe_escolhida.armadura_base, classe_escolhida.armadura_base, classe_escolhida.id
-                )
-                player = Player(nome, classe_escolhida.hp_base, classe_escolhida.mana_base, 15, 0, 1,
-                                 classe_escolhida.ataque_base, classe_escolhida.armadura_base, classe_escolhida.id)
-                player.id = player_id
+                player, player_id = self.character_creation.criar_personagem(nome, classe_escolhida)
                 print(f"Personagem {nome} ({classe_escolhida.nome}) criado com ID {player_id}!")
 
             elif opcao_inicial == 2:
@@ -175,20 +162,15 @@ class Game:
                 if option == 1:
                     player.mostrar_status()
                     input("\nPressione Enter para continuar...")
-
                 elif option == 2:
                     self.menu_explorar(player, player_id)
-
                 elif option == 3:
                     self.menu_inventario(player, player_id)
-
                 elif option == 4:
                     Shop(player, player_id).abrir()
                     salvar_player(player, player_id)
-
                 elif option == 5:
                     print(f"See you later, {player.nome}")
                     jogando = False
-
                 else:
                     print("Opção inválida.")
