@@ -21,6 +21,7 @@ Projeto desenvolvido como estudo prático de Programação Orientada a Objetos, 
 Selune/
 ├── main.py                  # ponto de entrada do jogo (menu, loop principal)
 ├── postgre.sql              # script de criação das tabelas do banco
+├── seed_data.sql            # popula o banco com os dados iniciais (itens, monstros, loja)
 ├── requirements.txt         # dependências Python
 ├── .env.example              # modelo de variáveis de ambiente (sem valores reais)
 │
@@ -32,7 +33,8 @@ Selune/
 │   └── equipment.py          # Equipment (slots de arma/armadura/acessório)
 │
 ├── Systems/
-│   └── combat.py             # Combat — orquestra turnos, XP, gold, loot e logs
+│   ├── combat.py             # Combat — orquestra turnos, XP, gold, loot e logs
+│   └── shop.py                # Shop — compra e venda de itens na loja
 │
 ├── World/
 │   └── location.py           # Localização (regiões do jogo)
@@ -45,7 +47,7 @@ Selune/
 │   ├── location_repository.py    # CRUD de localizações
 │   ├── inventory_repository.py   # inventário persistido (upsert de quantidade)
 │   ├── combat_log_repository.py  # registro de logs de combate
-│   └── seed.py                    # popula o banco com dados iniciais
+│   └── shop_repository.py        # compra e venda de itens na loja
 │
 └── analytics/                # camada de engenharia de dados
     ├── spark/                    # exportação e análise com PySpark
@@ -60,11 +62,14 @@ Selune/
 ## Modelo de dados
 
 - **players** — dados do personagem (status, atributos, progressão)
-- **items** — itens do jogo, com herança em tabela única (armas, armaduras, consumíveis, loot, acessórios)
-- **monsters** — monstros, cada um com um possível item de loot (`loot_item_id`, opcional)
+- **items** — itens do jogo, com herança em tabela única (armas, armaduras, consumíveis, loot, acessórios), incluindo raridade, nível requerido e subtipo (para acessórios)
+- **attributes** / **item_effects** — catálogo de atributos (crítico, resistências, etc.) e os bônus que cada item concede
+- **monsters** — monstros do jogo
+- **monster_drops** — possíveis drops de cada monstro, com chance individual (%) por item
 - **locations** — regiões do mundo
 - **monster_locations** — relação muitos-para-muitos entre monstros e regiões
 - **inventory** — relação muitos-para-muitos entre players e items, com quantidade
+- **shop_items** — preço de compra/venda e disponibilidade de cada item na loja (populado automaticamente via trigger a cada item novo)
 - **combat_logs** — histórico de cada combate (player, monstro, xp, gold, vitória, duração)
 
 ## Como executar
@@ -117,10 +122,10 @@ CREATE DATABASE rpg_database;
 
 Rode o script `postgre.sql` no banco `rpg_database` (via extensão do VSCode, DBeaver, ou terminal `psql`).
 
-### 6. Popule os dados iniciais (itens, monstros, localizações)
+### 6. Popule os dados iniciais (itens, monstros, localizações, loja)
 
 ```bash
-python -m Database.seed
+psql -U postgres -d rpg_database -f seed_data.sql
 ```
 
 ### 7. Rode o jogo
@@ -157,13 +162,12 @@ Edite o `.env` e defina ao menos a `DB_PASSWORD` (as outras variáveis já têm 
 docker compose up --build
 ```
 
-Isso cria o banco PostgreSQL, executa `postgre.sql` automaticamente (criando as tabelas) e inicia o jogo.
+Isso cria o banco PostgreSQL, executa `postgre.sql` e `seed_data.sql` automaticamente (criando as tabelas e populando itens, monstros e loja) e inicia o jogo — não precisa de nenhum passo manual de seed.
 
-### 4. Popule os dados iniciais (em outro terminal, com os containers rodando)
-
-```bash
-docker compose exec app python -m Database.seed
-```
+> **Atenção:** os scripts de `docker-entrypoint-initdb.d` só rodam automaticamente quando o volume `selune_data` é criado do zero. Se você já tinha subido os containers antes dessa mudança, rode `docker compose down -v` (remove o volume) antes do `docker compose up --build` acima, ou popule manualmente:
+> ```bash
+> cat seed_data.sql | docker compose exec -T db psql -U postgres -d rpg_database
+> ```
 
 > **Nota:** se estiver usando a extensão Docker do VSCode e o painel de logs não aceitar input do teclado, use:
 > ```bash
@@ -178,6 +182,7 @@ docker compose exec app python -m Database.seed
 - Ganho de XP, ouro e itens ao derrotar monstros
 - Sistema de level up (aumenta ataque e HP máximo)
 - Inventário persistente
+- Loja para compra e venda de itens (preços calculados automaticamente por trigger)
 - Sistema de equipamento (arma, armadura, acessório)
 - Uso de itens (cura, equipar) com efeitos distintos por tipo (polimorfismo)
 - Monstros distribuídos por região (relação muitos-para-muitos)
@@ -239,4 +244,5 @@ dbt test
 Projeto em desenvolvimento contínuo. Próximos passos incluem:
 - Orquestração da camada de analytics via Airflow
 - Containerização do Spark e dbt (hoje rodam localmente, fora do Docker Compose)
-- Sistema de loja, NPCs e crafting
+- Aplicar os bônus de `item_effects` (crítico, resistências, etc.) aos status do player ao equipar
+- NPCs e sistema de crafting

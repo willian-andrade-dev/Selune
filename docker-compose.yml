@@ -11,7 +11,8 @@ services:
       - "5433:5432"
     volumes:
       - selune_data:/var/lib/postgresql/data
-      - ./postgre.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgre.sql:/docker-entrypoint-initdb.d/1_postgre.sql
+      - ./seed_data.sql:/docker-entrypoint-initdb.d/2_seed_data.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
