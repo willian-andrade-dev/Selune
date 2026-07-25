@@ -5,12 +5,12 @@ from Entities.monster import Monstro
 from World.location import Localização
 from Entities.player import Player
 
+
 class Combat:
     def __init__(self, player: Player, monstro: Monstro, localizacao: Localização):
         self.player = player
         self.monstro = monstro
         self.localizacao = localizacao
-
 
     def start(self: 'Combat') -> None:
         inicio = time.time()
@@ -34,10 +34,15 @@ class Combat:
             self.player.subir_nivel()
             self.player.gold += self.monstro.ouro
 
-            if self.monstro.loot is not None:
-                self.player.inventario.adicionar_item(self.monstro.loot)
-                adicionar_item_inventario(self.player.id, self.monstro.loot.id, 1)
-                print(f"Você ganhou {self.monstro.xp} de XP, {self.monstro.ouro} peças de Ouro e {self.monstro.loot.nome} como loot")
+            itens_dropados = self.monstro.sortear_drops()
+            for item in itens_dropados:
+                self.player.inventario.adicionar_item(item)
+                adicionar_item_inventario(self.player.id, item.id, 1)
+
+            if itens_dropados:
+                nomes = ", ".join(item.nome for item in itens_dropados)
+                print(f"Você ganhou {self.monstro.xp} de XP, {self.monstro.ouro} peças de Ouro "
+                      f"e dropou: {nomes}")
             else:
                 print(f"Você ganhou {self.monstro.xp} de XP, {self.monstro.ouro} peças de Ouro")
 

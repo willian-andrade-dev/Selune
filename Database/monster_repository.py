@@ -1,7 +1,8 @@
 from Database.connection import conectar
 from Entities.monster import Monstro
 
-def criar_monstro(nome: str, hp: int, loot_item_id: int, ataque: int, xp: int, ouro: int, location_ids: list) -> int:
+
+def criar_monstro(nome: str, hp: int, ataque: int, xp: int, ouro: int, location_ids: list) -> int:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -15,10 +16,10 @@ def criar_monstro(nome: str, hp: int, loot_item_id: int, ataque: int, xp: int, o
         return existe[0]
 
     cursor.execute("""
-        INSERT INTO monsters (nome, hp, loot_item_id, ataque, xp, ouro)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO monsters (nome, hp, ataque, xp, ouro)
+        VALUES (%s, %s, %s, %s, %s)
         RETURNING id
-    """, (nome, hp, loot_item_id, ataque, xp, ouro))
+    """, (nome, hp, ataque, xp, ouro))
 
     monster_id = cursor.fetchone()[0]
 
@@ -34,20 +35,48 @@ def criar_monstro(nome: str, hp: int, loot_item_id: int, ataque: int, xp: int, o
 
     return monster_id
 
-def carregar_monstros(itens: dict) -> list:
+
+def criar_drop_monstro(monster_id: int, item_id: int, chance_drop: float) -> None:
+    """Vincula um possível drop (monster_drops) a um monstro já existente."""
     conexao = conectar()
     cursor = conexao.cursor()
-    cursor.execute("SELECT id, nome, hp, loot_item_id, ataque, xp, ouro FROM monsters")
-    linhas = cursor.fetchall()
+
+    cursor.execute("""
+        INSERT INTO monster_drops (monster_id, item_id, chance_drop)
+        VALUES (%s, %s, %s)
+        ON CONFLICT (monster_id, item_id) DO NOTHING
+    """, (monster_id, item_id, chance_drop))
+
+    conexao.commit()
     cursor.close()
     conexao.close()
 
+
+def carregar_monstros(itens: dict) -> list:
+    conexao = conectar()
+    cursor = conexao.cursor()
+
+    cursor.execute("SELECT id, nome, hp, ataque, xp, ouro FROM monsters")
+    linhas_monstros = cursor.fetchall()
+
+    cursor.execute("SELECT monster_id, item_id, chance_drop FROM monster_drops")
+    linhas_drops = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    drops_por_monstro = {}
+    for monster_id, item_id, chance in linhas_drops:
+        item = itens.get(item_id)
+        if item is not None:
+            drops_por_monstro.setdefault(monster_id, []).append((item, float(chance)))
+
     monstros = []
-    for linha in linhas:
-        id, nome, hp, loot_item_id, ataque, xp, ouro = linha
-        loot = itens.get(loot_item_id)  # pega o objeto Item já carregado, ou None
-        monstro = Monstro(nome, hp, loot, ataque, xp, ouro)
+    for linha in linhas_monstros:
+        id, nome, hp, ataque, xp, ouro = linha
+        monstro = Monstro(nome, hp, ataque, xp, ouro)
         monstro.id = id
+        monstro.drops = drops_por_monstro.get(id, [])
         monstros.append(monstro)
 
     return monstros
