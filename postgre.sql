@@ -94,6 +94,16 @@ CREATE TABLE IF NOT EXISTS locations (
     regiao VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS classes (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(30) UNIQUE NOT NULL,
+    descricao TEXT,
+    hp_base INT NOT NULL,
+    mana_base INT NOT NULL,
+    ataque_base INT NOT NULL,
+    armadura_base INT NOT NULL
+);
+
 -- PLAYERS (não depende de nenhuma outra tabela)
 CREATE TABLE IF NOT EXISTS players (
     id SERIAL PRIMARY KEY,
@@ -108,7 +118,30 @@ CREATE TABLE IF NOT EXISTS players (
     ataque_base INTEGER NOT NULL,
     ataque INTEGER NOT NULL,
     armadura INTEGER NOT NULL,
-    armadura_base INTEGER NOT NULL
+    armadura_base INTEGER NOT NULL,
+    classe_id INTEGER NOT NULL,
+
+    FOREIGN KEY (classe_id)
+        REFERENCES classes(id)
+);
+
+CREATE TABLE IF NOT EXISTS habilidades (
+    id SERIAL PRIMARY KEY,
+    classe_id INTEGER NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    descricao VARCHAR(150),
+    nivel_requerido INTEGER NOT NULL DEFAULT 1,
+    custo_mana INTEGER NOT NULL,
+    tipo VARCHAR(20) NOT NULL,
+    valor INTEGER NOT NULL,
+    duracao_turnos INTEGER NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (classe_id)
+        REFERENCES classes(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT chk_habilidade_tipo
+        CHECK (tipo IN ('dano', 'cura', 'buff_ataque', 'buff_armadura'))
 );
 
 -- MONSTERS (não guarda mais loot único; drops ficam em MONSTER_DROPS)
@@ -233,3 +266,4 @@ CREATE TRIGGER trg_shop_items_auto_insert
 AFTER INSERT ON items
 FOR EACH ROW
 EXECUTE FUNCTION fn_shop_items_auto_insert();
+

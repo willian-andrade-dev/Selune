@@ -1,12 +1,14 @@
 from typing import TYPE_CHECKING
 from Entities.inventory import Inventory
 from Entities.equipment import Equipment
+from Entities.classes import Classe
 
 if TYPE_CHECKING:
     from Entities.monster import Monstro
 
 class Player:
-    def __init__(self: 'Player', nome: str, hp: int, mana: int, gold: int, xp: int, level: int, ataque: int, armadura: int) -> None:
+    def __init__(self: 'Player', nome: str, hp: int, mana: int, gold: int, xp: int, level: int,
+                 ataque: int, armadura: int, classe_id: int) -> None:
         self.id = None
         self.nome = nome
         self.hp_maximo = hp
@@ -14,12 +16,14 @@ class Player:
         self.mana = mana
         self.gold = gold
         self.xp = xp
-        self.xp_para_upar = 75 # atualmente fixo
+        self.xp_para_upar = 75
         self.level = level
-        self.ataque_base = ataque # valor fixo do personagem
-        self.ataque = ataque # valor sem equipamento
+        self.ataque_base = ataque
+        self.ataque = ataque
         self.armadura_base = armadura
         self.armadura = armadura
+        self.classe_id = classe_id
+        self.buffs_ativos = []
         self.inventario = Inventory()
         self.equipamento = Equipment()
 
@@ -65,6 +69,22 @@ class Player:
         item_escolhido.use(self)
         return True
 
+    def habilidades_disponiveis(self: 'Player', todas_habilidades: list) -> list:
+        return [h for h in todas_habilidades
+                if h.classe_id == self.classe_id and h.nivel_requerido <= self.level]
+
+    def aplicar_buff(self: 'Player', tipo: str, valor: int, duracao_turnos: int) -> None:
+        self.buffs_ativos.append({"tipo": tipo, "valor": valor, "turnos_restantes": duracao_turnos})
+        self.atualizar_status()
+
+    def atualizar_buffs_turno(self: 'Player') -> None:
+        if not self.buffs_ativos:
+            return
+        for buff in self.buffs_ativos:
+            buff["turnos_restantes"] -= 1
+        self.buffs_ativos = [b for b in self.buffs_ativos if b["turnos_restantes"] > 0]
+        self.atualizar_status()
+
     def atualizar_status(self: 'Player') -> None:
         self.ataque = self.ataque_base
         if self.equipamento.arma is not None:
@@ -73,6 +93,12 @@ class Player:
         self.armadura = self.armadura_base
         if self.equipamento.armadura is not None:
             self.armadura += self.equipamento.armadura.armadura
+
+        for buff in self.buffs_ativos:
+            if buff["tipo"] == "buff_ataque":
+                self.ataque += buff["valor"]
+            elif buff["tipo"] == "buff_armadura":
+                self.armadura += buff["valor"]
 
     def subir_nivel(self: 'Player') -> None:
         while self.xp >= self.xp_para_upar:

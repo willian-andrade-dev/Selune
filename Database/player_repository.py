@@ -2,22 +2,22 @@ from typing import Optional
 from Database.connection import conectar
 from Entities.player import Player
 
-def criar_player(nome: str, hp: int, hp_maximo: int, mana: int, gold: int, xp: int, xp_para_upar: int, level: int, ataque_base: int, ataque: int, armadura: int, armadura_base: int) -> int:
+def criar_player(nome: str, hp: int, hp_maximo: int, mana: int, gold: int, xp: int, xp_para_upar: int,
+                  level: int, ataque_base: int, ataque: int, armadura: int, armadura_base: int,
+                  classe_id: int) -> int:
     conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("""
-        INSERT INTO players (nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO players (nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base, classe_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         RETURNING id
-    """, (nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base))
+    """, (nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base, classe_id))
 
     player_id = cursor.fetchone()[0]
-
     conexao.commit()
     cursor.close()
     conexao.close()
-
     return player_id
 
 def buscar_player(id_player: int) -> Optional[Player]:
@@ -33,8 +33,8 @@ def buscar_player(id_player: int) -> Optional[Player]:
     if linha is None:
         return None
     
-    id, nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base = linha
-    player = Player(nome, hp, mana, gold, xp, level, ataque_base, armadura_base)
+    id, nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base, classe_id = linha
+    player = Player(nome, hp, mana, gold, xp, level, ataque_base, armadura_base, classe_id)
     player.id = id
     player.hp_maximo = hp_maximo
     player.xp_para_upar = xp_para_upar

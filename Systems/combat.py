@@ -7,10 +7,11 @@ from Entities.player import Player
 
 
 class Combat:
-    def __init__(self, player: Player, monstro: Monstro, localizacao: Localização):
+    def __init__(self, player: Player, monstro: Monstro, localizacao: Localização, habilidades: list):
         self.player = player
         self.monstro = monstro
         self.localizacao = localizacao
+        self.habilidades = habilidades
 
     def _ler_opcao(self, minimo: int, maximo: int) -> int:
         while True:
@@ -21,6 +22,29 @@ class Combat:
                 print(f"Digite um número entre {minimo} e {maximo}.")
             except ValueError:
                 print("Digite apenas números.")
+
+    def _usar_habilidade_turno(self) -> bool:
+        disponiveis = self.player.habilidades_disponiveis(self.habilidades)
+        if not disponiveis:
+            print("Você ainda não tem nenhuma habilidade disponível.")
+            return False
+
+        print("\n=== HABILIDADES ===")
+        for i, h in enumerate(disponiveis, start=1):
+            print(f"{i} - {h.nome} (custo: {h.custo_mana} mana) - {h.descricao}")
+        print(f"{len(disponiveis) + 1} - Cancelar")
+
+        escolha = self._ler_opcao(1, len(disponiveis) + 1)
+        if escolha == len(disponiveis) + 1:
+            return False
+
+        habilidade = disponiveis[escolha - 1]
+        if self.player.mana < habilidade.custo_mana:
+            print("Mana insuficiente!")
+            return False
+
+        habilidade.usar(self.player, self.monstro)
+        return True
 
     def _curar_turno(self) -> bool:
         """Retorna True se o turno foi consumido (poção usada), False se cancelado/sem poções."""
@@ -52,17 +76,25 @@ class Combat:
                   f"{self.monstro.nome} HP: {self.monstro.hp}")
             print("1 - Atacar")
             print("2 - Se curar")
-            escolha = self._ler_opcao(1, 2)
+            print("3 - Usar habilidade")
+            escolha = self._ler_opcao(1, 3)
 
             if escolha == 1:
                 self.player.atacar(self.monstro)
-            else:
+            elif escolha == 2:
                 turno_usado = self.player.usar_pocao_cura(self._ler_opcao)
+                if not turno_usado:
+                    continue
+            else:
+                turno_usado = self._usar_habilidade_turno()
                 if not turno_usado:
                     continue
 
             if self.monstro.hp <= 0:
                 break
+
+            self.monstro.atacar(self.player)
+            self.player.atualizar_buffs_turno()
 
             self.monstro.atacar(self.player)
 

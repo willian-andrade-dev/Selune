@@ -6,19 +6,35 @@ from Database.item_repository import carregar_itens
 from Database.monster_repository import carregar_monstros
 from Database.location_repository import carregar_localizacoes
 from Database.inventory_repository import adicionar_item_inventario, carregar_inventario_jogador
+from Database.class_repository import carregar_classes, carregar_habilidades
 from World.location import Localização
 import random
 import os
 import copy
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from Entities.classes import Classe
+
 
 class Game:
     def __init__(self: 'Game') -> None:
         self.itens = carregar_itens()
         self.monstros = carregar_monstros(self.itens)
         self.localizacoes = carregar_localizacoes()
+        self.classes = carregar_classes()
+        self.habilidades = carregar_habilidades()
 
     def limpar_tela(self: 'Game') -> None:
         os.system('cls' if os.name == 'nt' else 'clear')
+
+    def selecionar_classe(self: 'Game') -> 'Classe':
+        print("\n=== ESCOLHA SUA CLASSE ===")
+        for i, c in enumerate(self.classes, start=1):
+            print(f"{i} - {c.nome}: {c.descricao}")
+        escolha = self.ler_opcao("Escolha uma classe: ", 1, len(self.classes))
+        return self.classes[escolha - 1]
 
     def menu_inventario(self, player, player_id):
         while True:
@@ -80,7 +96,7 @@ class Game:
                     continue
 
                 monstro_escolhido = copy.deepcopy(random.choice(monstros_disponiveis))
-                combate = Combat(player, monstro_escolhido, localizacao)
+                combate = Combat(player, monstro_escolhido, localizacao, self.habilidades)
                 combate.start()
                 salvar_player(player, player_id)
                 input("\nPressione Enter para continuar...")
@@ -117,10 +133,16 @@ class Game:
 
             if opcao_inicial == 1:
                 nome = input("Nome do personagem: ")
-                player_id = criar_player(nome, 20, 20, 5, 15, 0, 75, 1, 10, 10, 0, 0)
-                player = Player(nome, 20, 5, 15, 0, 1, 10, 0)
+                classe_escolhida = self.selecionar_classe()
+                player_id = criar_player(
+                    nome, classe_escolhida.hp_base, classe_escolhida.hp_base, classe_escolhida.mana_base,
+                    15, 0, 75, 1, classe_escolhida.ataque_base, classe_escolhida.ataque_base,
+                    classe_escolhida.armadura_base, classe_escolhida.armadura_base, classe_escolhida.id
+                )
+                player = Player(nome, classe_escolhida.hp_base, classe_escolhida.mana_base, 15, 0, 1,
+                                 classe_escolhida.ataque_base, classe_escolhida.armadura_base, classe_escolhida.id)
                 player.id = player_id
-                print(f"Personagem {nome} criado com ID {player_id}!")
+                print(f"Personagem {nome} ({classe_escolhida.nome}) criado com ID {player_id}!")
 
             elif opcao_inicial == 2:
                 player_id = self.ler_opcao("Digite o ID do seu personagem: ", 1, 999999)
