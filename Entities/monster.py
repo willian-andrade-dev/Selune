@@ -18,7 +18,7 @@ class Monstro:
 
     def atacar(self, player):
         dano_reduzido = max(self.ataque - player.armadura, 1)
-        player.hp = player.hp - dano_reduzido
+        player.hp = max(player.hp - dano_reduzido, 0)
         print(f"Player HP: {player.hp}")
 
     def sortear_drops(self) -> list:

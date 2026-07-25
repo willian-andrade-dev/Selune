@@ -27,6 +27,8 @@ class Combat:
 
         if not venceu:
             print(f"{self.player.nome} foi derrotado...")
+            self.player.hp = max(self.player.hp_maximo // 2, 1)
+            print(f"Você acordou em segurança com {self.player.hp}/{self.player.hp_maximo} de HP.")
             registrar_combate(self.player.id, self.monstro.id, 0, 0, False, duracao)
         else:
             print(f"Você derrotou {self.monstro.nome}!")
