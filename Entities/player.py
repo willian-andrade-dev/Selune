@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from Entities.inventory import Inventory
 from Entities.equipment import Equipment
 from Entities.classes import Classe
+from datetime import datetime, timedelta
 
 if TYPE_CHECKING:
     from Entities.monster import Monstro
@@ -16,19 +17,31 @@ class Player:
         self.mana = mana
         self.gold = gold
         self.xp = xp
-        self.xp_para_upar = 75
         self.level = level
+        self.xp_para_upar = self._calcular_xp_para_upar()
         self.ataque_base = ataque
         self.ataque = ataque
         self.armadura_base = armadura
         self.armadura = armadura
         self.classe_id = classe_id
+        self.energia_maxima = 30
+        self.energia_atual = 30
+        self.cansado_desde = None
         self.buffs_ativos = []
         self.inventario = Inventory()
         self.equipamento = Equipment()
 
     def __str__(self):
         return f"{self.nome} | Level {self.level} | HP: {self.hp}/{self.hp_maximo} | XP: {self.xp}"
+
+    def _calcular_xp_para_upar(self: 'Player') -> int:
+        """XP necessário para sair do nível atual e ir para o próximo.
+        Curva exponencial: rápida até ~nível 50-60 (progressão principal),
+        dispara nos níveis finais (60-100) — o nível 100 fica reservado
+        pra quem realmente dedicar um grind longo."""
+        BASE_XP = 15
+        GROWTH = 1.128
+        return int(BASE_XP * (GROWTH ** (self.level - 1)))
 
     def atacar(self: 'Player', monstro: 'Monstro') -> None:
         print(f"HP: {monstro.hp}, Ataque: {monstro.ataque}")
@@ -106,5 +119,29 @@ class Player:
             self.level += 1
             self.ataque_base += 2 # valor que aumenta por nivel
             self.hp_maximo += 5 # valor que aumenta por nivel
+            self.xp_para_upar = self._calcular_xp_para_upar()
             print(f"{self.nome} subiu para o nível {self.level}!")
         self.atualizar_status()
+
+    def pode_lutar(self) -> tuple[bool, str]:
+        if self.energia_atual > 0:
+            return True, ""
+
+        if self.cansado_desde is None:
+            self.cansado_desde = datetime.now()
+            return False, "Você está exausto! Descanse por 1 hora."
+
+        tempo_passado = datetime.now() - self.cansado_desde
+        if tempo_passado >= timedelta(hours=1):
+            self.energia_atual = self.energia_maxima
+            self.cansado_desde = None
+            return True, ""
+
+        restante = timedelta(hours=1) - tempo_passado
+        minutos = int(restante.total_seconds() // 60)
+        return False, f"Ainda cansado. Faltam {minutos} minutos de descanso."
+
+    def consumir_energia(self) -> None:
+        self.energia_atual -= 1
+        if self.energia_atual == 0:
+            self.cansado_desde = datetime.now()
