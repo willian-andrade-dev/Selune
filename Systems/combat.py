@@ -12,14 +12,35 @@ class Combat:
         self.monstro = monstro
         self.localizacao = localizacao
 
+    def _ler_opcao(self, minimo: int, maximo: int) -> int:
+        while True:
+            try:
+                valor = int(input("Escolha uma opção: "))
+                if minimo <= valor <= maximo:
+                    return valor
+                print(f"Digite um número entre {minimo} e {maximo}.")
+            except ValueError:
+                print("Digite apenas números.")
+
     def start(self: 'Combat') -> None:
         inicio = time.time()
         print(f"Você encontrou um {self.monstro.nome} em {self.localizacao.nome}!")
 
         while self.player.hp > 0 and self.monstro.hp > 0:
-            self.player.atacar(self.monstro)
+            print(f"\n{self.player.nome} HP: {self.player.hp}/{self.player.hp_maximo}  |  "
+                  f"{self.monstro.nome} HP: {self.monstro.hp}")
+            print("1 - Atacar")
+            print("2 - Se curar")
+            escolha = self._ler_opcao(1, 2)
+
+            if escolha == 1:
+                self.player.atacar(self.monstro)
+            else:
+                self.player.curar()
+
             if self.monstro.hp <= 0:
                 break
+
             self.monstro.atacar(self.player)
 
         duracao = int((time.time() - inicio) * 1000)
