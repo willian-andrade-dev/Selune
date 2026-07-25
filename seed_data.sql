@@ -700,30 +700,30 @@ INSERT INTO classes (nome, descricao, hp_base, mana_base, ataque_base, armadura_
 ('Arqueiro', 'Ataques precisos à distância, equilíbrio entre dano e mana.', 22, 20, 10, 2);
 
 -- ================= HABILIDADES =================
-INSERT INTO habilidades (classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos) VALUES
+INSERT INTO habilidades (classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos, cooldown_turnos) VALUES
 -- Guerreiro
-((SELECT id FROM classes WHERE nome='Guerreiro'), 'Golpe Poderoso', 'Um ataque com força extra.', 1, 5, 'dano', 15, 0),
-((SELECT id FROM classes WHERE nome='Guerreiro'), 'Grito de Guerra', 'Aumenta o ataque por alguns turnos.', 5, 8, 'buff_ataque', 6, 3),
-((SELECT id FROM classes WHERE nome='Guerreiro'), 'Postura Defensiva', 'Aumenta a armadura por alguns turnos.', 10, 8, 'buff_armadura', 8, 3),
-((SELECT id FROM classes WHERE nome='Guerreiro'), 'Fúria Implacável', 'Um golpe brutal, com alto dano.', 15, 12, 'dano', 35, 0),
+((SELECT id FROM classes WHERE nome='Guerreiro'), 'Golpe Poderoso', 'Um ataque com força extra.', 1, 5, 'dano', 15, 0, 1),
+((SELECT id FROM classes WHERE nome='Guerreiro'), 'Grito de Guerra', 'Aumenta o ataque por alguns turnos.', 5, 8, 'buff_ataque', 6, 3, 2),
+((SELECT id FROM classes WHERE nome='Guerreiro'), 'Postura Defensiva', 'Aumenta a armadura por alguns turnos.', 10, 8, 'buff_armadura', 8, 3, 3),
+((SELECT id FROM classes WHERE nome='Guerreiro'), 'Fúria Implacável', 'Um golpe brutal, com alto dano.', 15, 12, 'dano', 35, 0, 4),
 
 -- Mago
-((SELECT id FROM classes WHERE nome='Mago'), 'Mísseis Arcanos', 'Projéteis de energia arcana.', 1, 10, 'dano', 18, 0),
-((SELECT id FROM classes WHERE nome='Mago'), 'Escudo Arcano', 'Um escudo mágico temporário.', 5, 12, 'buff_armadura', 10, 3),
-((SELECT id FROM classes WHERE nome='Mago'), 'Explosão de Gelo', 'Uma explosão gélida poderosa.', 10, 18, 'dano', 32, 0),
-((SELECT id FROM classes WHERE nome='Mago'), 'Meteoro', 'Invoca um meteoro devastador.', 15, 28, 'dano', 55, 0),
+((SELECT id FROM classes WHERE nome='Mago'), 'Mísseis Arcanos', 'Projéteis de energia arcana.', 1, 10, 'dano', 18, 0, 1),
+((SELECT id FROM classes WHERE nome='Mago'), 'Escudo Arcano', 'Um escudo mágico temporário.', 5, 12, 'buff_armadura', 10, 3, 2),
+((SELECT id FROM classes WHERE nome='Mago'), 'Explosão de Gelo', 'Uma explosão gélida poderosa.', 10, 18, 'dano', 32, 0, 3),
+((SELECT id FROM classes WHERE nome='Mago'), 'Meteoro', 'Invoca um meteoro devastador.', 15, 28, 'dano', 55, 0, 4),
 
 -- Clérigo
-((SELECT id FROM classes WHERE nome='Clérigo'), 'Toque Curativo', 'Cura uma quantidade de HP.', 1, 8, 'cura', 15, 0),
-((SELECT id FROM classes WHERE nome='Clérigo'), 'Bênção', 'Aumenta o ataque por alguns turnos.', 5, 10, 'buff_ataque', 7, 3),
-((SELECT id FROM classes WHERE nome='Clérigo'), 'Cura Maior', 'Cura uma grande quantidade de HP.', 10, 18, 'cura', 35, 0),
-((SELECT id FROM classes WHERE nome='Clérigo'), 'Luz Sagrada', 'Um raio de luz que causa dano.', 15, 20, 'dano', 30, 0),
+((SELECT id FROM classes WHERE nome='Clérigo'), 'Toque Curativo', 'Cura uma quantidade de HP.', 1, 8, 'cura', 15, 0, 1),
+((SELECT id FROM classes WHERE nome='Clérigo'), 'Bênção', 'Aumenta o ataque por alguns turnos.', 5, 10, 'buff_ataque', 7, 3, 2),
+((SELECT id FROM classes WHERE nome='Clérigo'), 'Cura Maior', 'Cura uma grande quantidade de HP.', 10, 18, 'cura', 35, 0, 3),
+((SELECT id FROM classes WHERE nome='Clérigo'), 'Luz Sagrada', 'Um raio de luz que causa dano.', 15, 20, 'dano', 30, 0, 4),
 
 -- Arqueiro
-((SELECT id FROM classes WHERE nome='Arqueiro'), 'Tiro Certeiro', 'Um disparo preciso.', 1, 6, 'dano', 16, 0),
-((SELECT id FROM classes WHERE nome='Arqueiro'), 'Chuva de Flechas', 'Múltiplos disparos rápidos.', 5, 10, 'dano', 24, 0),
-((SELECT id FROM classes WHERE nome='Arqueiro'), 'Foco Predatório', 'Aumenta o ataque por alguns turnos.', 10, 10, 'buff_ataque', 8, 3),
-((SELECT id FROM classes WHERE nome='Arqueiro'), 'Tiro Perfurante', 'Um disparo que ignora parte da armadura.', 15, 16, 'dano', 40, 0);
+((SELECT id FROM classes WHERE nome='Arqueiro'), 'Tiro Certeiro', 'Um disparo preciso.', 1, 6, 'dano', 16, 0, 1),
+((SELECT id FROM classes WHERE nome='Arqueiro'), 'Chuva de Flechas', 'Múltiplos disparos rápidos.', 5, 10, 'dano', 24, 0, 2),
+((SELECT id FROM classes WHERE nome='Arqueiro'), 'Foco Predatório', 'Aumenta o ataque por alguns turnos.', 10, 10, 'buff_ataque', 8, 3, 3),
+((SELECT id FROM classes WHERE nome='Arqueiro'), 'Tiro Perfurante', 'Um disparo que ignora parte da armadura.', 15, 16, 'dano', 40, 0, 4);
 
 -- ================= ITEMS: ARMAS INICIAIS =================
 INSERT INTO items (nome, tipo, valor, nivel_requerido, raridade, descricao, dano) VALUES

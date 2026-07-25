@@ -30,6 +30,7 @@ class Player:
         self.buffs_ativos = []
         self.inventario = Inventory()
         self.equipamento = Equipment()
+        self.cooldowns_habilidades = {}
 
     def __str__(self):
         return f"{self.nome} | Level {self.level} | HP: {self.hp}/{self.hp_maximo} | XP: {self.xp}"
@@ -112,6 +113,14 @@ class Player:
                 self.ataque += buff["valor"]
             elif buff["tipo"] == "buff_armadura":
                 self.armadura += buff["valor"]
+
+    def atualizar_cooldowns_turno(self: 'Player') -> None:
+        if not self.cooldowns_habilidades:
+            return
+        for hid in list(self.cooldowns_habilidades):
+            self.cooldowns_habilidades[hid] -= 1
+            if self.cooldowns_habilidades[hid] <= 0:
+                del self.cooldowns_habilidades[hid]
 
     def subir_nivel(self: 'Player') -> None:
         while self.xp >= self.xp_para_upar:

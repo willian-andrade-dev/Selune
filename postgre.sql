@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS habilidades (
     tipo VARCHAR(20) NOT NULL,
     valor INTEGER NOT NULL,
     duracao_turnos INTEGER NOT NULL DEFAULT 0,
+    cooldown_turnos INTEGER NOT NULL DEFAULT 0,
 
     FOREIGN KEY (classe_id)
         REFERENCES classes(id)

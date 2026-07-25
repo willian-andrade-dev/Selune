@@ -19,7 +19,7 @@ def carregar_habilidades() -> list:
     conexao = conectar()
     cursor = conexao.cursor()
     cursor.execute("""
-        SELECT id, classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos
+        SELECT id, classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos, cooldown_turnos
         FROM habilidades
     """)
     linhas = cursor.fetchall()
@@ -28,6 +28,6 @@ def carregar_habilidades() -> list:
 
     habilidades = []
     for linha in linhas:
-        id, classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos = linha
-        habilidades.append(Habilidade(id, classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos))
+        (id, classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos, cooldown_turnos) = linha
+        habilidades.append(Habilidade(id, classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos, cooldown_turnos))
     return habilidades

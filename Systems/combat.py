@@ -43,7 +43,9 @@ class Combat:
 
         print("\n=== HABILIDADES ===")
         for i, h in enumerate(disponiveis, start=1):
-            print(f"{i} - {h.nome} (custo: {h.custo_mana} mana) - {h.descricao}")
+            cooldown = self.player.cooldowns_habilidades.get(h.id, 0)
+            status = f" [cooldown: {cooldown}]" if cooldown > 0 else ""
+            print(f"{i} - {h.nome} (custo: {h.custo_mana} mana){status} - {h.descricao}")
         print(f"{len(disponiveis) + 1} - Cancelar")
 
         escolha = self._ler_opcao(1, len(disponiveis) + 1)
@@ -51,12 +53,7 @@ class Combat:
             return False
 
         habilidade = disponiveis[escolha - 1]
-        if self.player.mana < habilidade.custo_mana:
-            print("Mana insuficiente!")
-            return False
-
-        habilidade.usar(self.player, self.monstro)
-        return True
+        return habilidade.usar(self.player, self.monstro)
 
     def _curar_turno(self) -> bool:
         """Retorna True se o turno foi consumido (poção usada), False se cancelado/sem poções."""
@@ -112,6 +109,7 @@ class Combat:
 
             self.monstro.atacar(self.player)
             self.player.atualizar_buffs_turno()
+            self.player.atualizar_cooldowns_turno()
 
         duracao = int((time.time() - inicio) * 1000)
 
