@@ -39,6 +39,7 @@ def carregar_localizacoes() -> list:
     localizacoes = []
     for linha in linhas:
         id, nome, dificuldade, regiao = linha
-        localizacao = Localização(nome, dificuldade, regiao) # variavel no singular
-        localizacoes.append(localizacao) # adiciona na lista, sem apagar as outras
+        localizacao = Localização(nome, dificuldade, regiao)
+        localizacao.id = id
+        localizacoes.append(localizacao)
     return localizacoes

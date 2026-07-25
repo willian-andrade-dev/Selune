@@ -62,6 +62,9 @@ def carregar_monstros(itens: dict) -> list:
     cursor.execute("SELECT monster_id, item_id, chance_drop FROM monster_drops")
     linhas_drops = cursor.fetchall()
 
+    cursor.execute("SELECT monster_id, location_id FROM monster_locations")
+    linhas_locations = cursor.fetchall()
+
     cursor.close()
     conexao.close()
 
@@ -71,12 +74,17 @@ def carregar_monstros(itens: dict) -> list:
         if item is not None:
             drops_por_monstro.setdefault(monster_id, []).append((item, float(chance)))
 
+    locations_por_monstro = {}
+    for monster_id, location_id in linhas_locations:
+        locations_por_monstro.setdefault(monster_id, []).append(location_id)
+
     monstros = []
     for linha in linhas_monstros:
         id, nome, hp, ataque, xp, ouro = linha
         monstro = Monstro(nome, hp, ataque, xp, ouro)
         monstro.id = id
         monstro.drops = drops_por_monstro.get(id, [])
+        monstro.location_ids = locations_por_monstro.get(id, [])
         monstros.append(monstro)
 
     return monstros

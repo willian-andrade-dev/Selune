@@ -57,7 +57,7 @@ class Combat:
             if escolha == 1:
                 self.player.atacar(self.monstro)
             else:
-                turno_usado = self._curar_turno()
+                turno_usado = self.player.usar_pocao_cura(self._ler_opcao)
                 if not turno_usado:
                     continue
 

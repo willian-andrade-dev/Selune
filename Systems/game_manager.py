@@ -6,6 +6,7 @@ from Database.item_repository import carregar_itens
 from Database.monster_repository import carregar_monstros
 from Database.location_repository import carregar_localizacoes
 from Database.inventory_repository import adicionar_item_inventario, carregar_inventario_jogador
+from World.location import Localização
 import random
 import os
 import copy
@@ -40,6 +41,55 @@ class Game:
                     item.use(player)
                     salvar_player(player, player_id)
                 input("\nPressione Enter para continuar...")
+            else:
+                break
+
+    def selecionar_localizacao(self: 'Game') -> 'Localização':
+        localizacoes_ordenadas = sorted(self.localizacoes, key=lambda loc: loc.dificuldade)
+
+        print("\n=== LOCALIZAÇÕES ===")
+        for i, loc in enumerate(localizacoes_ordenadas, start=1):
+            print(f"{i} - {loc.nome} (Nível {loc.dificuldade})")
+        print(f"{len(localizacoes_ordenadas) + 1} - Voltar")
+
+        escolha = self.ler_opcao("Escolha uma localização: ", 1, len(localizacoes_ordenadas) + 1)
+        if escolha == len(localizacoes_ordenadas) + 1:
+            return None
+        return localizacoes_ordenadas[escolha - 1]
+
+    def monstros_da_localizacao(self: 'Game', localizacao: 'Localização') -> list:
+        return [m for m in self.monstros if localizacao.id in m.location_ids]
+
+    def menu_explorar(self: 'Game', player: 'Player', player_id: int) -> None:
+        while True:
+            self.limpar_tela()
+            print("1 - Localizações")
+            print("2 - Se curar")
+            print("3 - Voltar")
+            escolha = self.ler_opcao("Escolha uma opção: ", 1, 3)
+
+            if escolha == 1:
+                localizacao = self.selecionar_localizacao()
+                if localizacao is None:
+                    continue
+
+                monstros_disponiveis = self.monstros_da_localizacao(localizacao)
+                if not monstros_disponiveis:
+                    print(f"Nenhum monstro encontrado em {localizacao.nome}.")
+                    input("\nPressione Enter para continuar...")
+                    continue
+
+                monstro_escolhido = copy.deepcopy(random.choice(monstros_disponiveis))
+                combate = Combat(player, monstro_escolhido, localizacao)
+                combate.start()
+                salvar_player(player, player_id)
+                input("\nPressione Enter para continuar...")
+
+            elif escolha == 2:
+                player.usar_pocao_cura(lambda mi, ma: self.ler_opcao("Escolha uma opção: ", mi, ma))
+                salvar_player(player, player_id)
+                input("\nPressione Enter para continuar...")
+
             else:
                 break
 
@@ -94,38 +144,27 @@ class Game:
             while jogando:
                 self.limpar_tela()
                 print("1 - Mostrar status")
-                print("2 - Atacar criatura")
-                print("3 - Se curar")
-                print("4 - Inventário")
-                print("5 - Loja")
-                print("6 - Log Out")
-                option = self.ler_opcao("Escolha uma opção: ", 1, 6)
+                print("2 - Explorar")
+                print("3 - Inventário")
+                print("4 - Loja")
+                print("5 - Log Out")
+                option = self.ler_opcao("Escolha uma opção: ", 1, 5)
 
                 if option == 1:
                     player.mostrar_status()
                     input("\nPressione Enter para continuar...")
 
                 elif option == 2:
-                    monstro_escolhido = copy.deepcopy(random.choice(self.monstros))
-                    localizacao = random.choice(self.localizacoes)
-                    combate = Combat(player, monstro_escolhido, localizacao)
-                    combate.start()
-                    salvar_player(player, player_id)
-                    input("\nPressione Enter para continuar...")
+                    self.menu_explorar(player, player_id)
 
                 elif option == 3:
-                    player.curar()
-                    salvar_player(player, player_id)
-                    input("\nPressione Enter para continuar...")
-
-                elif option == 4:
                     self.menu_inventario(player, player_id)
 
-                elif option == 5:
+                elif option == 4:
                     Shop(player, player_id).abrir()
                     salvar_player(player, player_id)
 
-                elif option == 6:
+                elif option == 5:
                     print(f"See you later, {player.nome}")
                     jogando = False
 
