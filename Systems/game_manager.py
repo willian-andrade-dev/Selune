@@ -92,8 +92,9 @@ class Game:
             return
 
         item_escolhido, _ = equipaveis[escolha - 1]
-        item_escolhido.use(player)
-        salvar_player(player, player_id)
+        equipou = item_escolhido.use(player)
+        if equipou:
+            salvar_player(player, player_id)
         input("\nPressione Enter para continuar...")
 
     def _desequipar_item(self, player, player_id):

@@ -1,17 +1,20 @@
 import time
+import random
 from Database.combat_log_repository import registrar_combate
 from Database.inventory_repository import adicionar_item_inventario
 from Entities.monster import Monstro
 from World.location import Localização
 from Entities.player import Player
 
-
 class Combat:
+    FUGA_CHANCE = 0.5
+
     def __init__(self, player: Player, monstro: Monstro, localizacao: Localização, habilidades: list):
         self.player = player
         self.monstro = monstro
         self.localizacao = localizacao
         self.habilidades = habilidades
+        self.fugiu = False
 
     def _ler_opcao(self, minimo: int, maximo: int) -> int:
         while True:
@@ -22,6 +25,15 @@ class Combat:
                 print(f"Digite um número entre {minimo} e {maximo}.")
             except ValueError:
                 print("Digite apenas números.")
+
+    def _tentar_fugir(self) -> bool:
+        """Retorna True se a fuga teve sucesso (combate encerra), False se falhou (turno consumido)."""
+        if random.random() < self.FUGA_CHANCE:
+            print(f"{self.player.nome} fugiu do combate!")
+            return True
+        print(f"{self.player.nome} tentou fugir, mas não conseguiu!")
+        return False
+
 
     def _usar_habilidade_turno(self) -> bool:
         disponiveis = self.player.habilidades_disponiveis(self.habilidades)
@@ -77,7 +89,8 @@ class Combat:
             print("1 - Atacar")
             print("2 - Se curar")
             print("3 - Usar habilidade")
-            escolha = self._ler_opcao(1, 3)
+            print("4 - Fugir")
+            escolha = self._ler_opcao(1, 4)
 
             if escolha == 1:
                 self.player.atacar(self.monstro)
@@ -85,10 +98,14 @@ class Combat:
                 turno_usado = self.player.usar_pocao_cura(self._ler_opcao)
                 if not turno_usado:
                     continue
-            else:
+            elif escolha == 3:
                 turno_usado = self._usar_habilidade_turno()
                 if not turno_usado:
                     continue
+            else:
+                if self._tentar_fugir():
+                    self.fugiu = True
+                    break
 
             if self.monstro.hp <= 0:
                 break
@@ -97,6 +114,11 @@ class Combat:
             self.player.atualizar_buffs_turno()
 
         duracao = int((time.time() - inicio) * 1000)
+
+        if self.fugiu:
+            print(f"{self.player.nome} escapou são e salvo, sem ganhar XP nem ouro desta vez.")
+            return  # sem registrar combate, sem penalidade, sem recompensa
+
         venceu = self.player.hp > 0
 
         if not venceu:
