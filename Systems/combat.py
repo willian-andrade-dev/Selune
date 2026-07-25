@@ -22,6 +22,27 @@ class Combat:
             except ValueError:
                 print("Digite apenas números.")
 
+    def _curar_turno(self) -> bool:
+        """Retorna True se o turno foi consumido (poção usada), False se cancelado/sem poções."""
+        pocoes = self.player.inventario.listar_pocoes_cura()
+
+        if not pocoes:
+            print("Você não tem nenhuma poção de cura no inventário!")
+            return False
+
+        print("\n=== POÇÕES DISPONÍVEIS ===")
+        for i, (item, quantidade) in enumerate(pocoes, start=1):
+            print(f"{i} - {item.nome} ({item.descricao_cura()}) x{quantidade}")
+        print(f"{len(pocoes) + 1} - Cancelar")
+
+        escolha = self._ler_opcao(1, len(pocoes) + 1)
+        if escolha == len(pocoes) + 1:
+            return False
+
+        item_escolhido, _ = pocoes[escolha - 1]
+        item_escolhido.use(self.player)
+        return True
+
     def start(self: 'Combat') -> None:
         inicio = time.time()
         print(f"Você encontrou um {self.monstro.nome} em {self.localizacao.nome}!")
@@ -36,7 +57,9 @@ class Combat:
             if escolha == 1:
                 self.player.atacar(self.monstro)
             else:
-                self.player.curar()
+                turno_usado = self._curar_turno()
+                if not turno_usado:
+                    continue
 
             if self.monstro.hp <= 0:
                 break

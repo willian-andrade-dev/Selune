@@ -72,6 +72,14 @@ class Consumivel(Item):
         player.inventario.remover_item(self)
         remover_item_inventario(player.id, self.id, 1)
 
+    def eh_pocao_cura(self) -> bool:
+        return self.funcao in self._CURA_FIXA or self.funcao == "curar_total"
+
+    def descricao_cura(self) -> str:
+        if self.funcao == "curar_total":
+            return "cura toda a vida"
+        return f"cura {self._CURA_FIXA[self.funcao]} HP"
+
     def use(self: 'Consumivel', player: 'Player') -> None:
         if self.funcao in self._CURA_FIXA:
             cura = self._CURA_FIXA[self.funcao]

@@ -44,14 +44,26 @@ class Player:
         print(f"Level: {self.level}")
 
 
-    def curar(self: 'Player') -> None:
-        if self.hp >= self.hp_maximo:
-            print("Você já está full life")
-        else:
-            hp_antes = self.hp
-            self.hp = min(self.hp + 10, self.hp_maximo)
-            curado = self.hp - hp_antes
-            print(f"{self.nome} utilizou uma poção de cura, +{curado} de HP. HP atual: {self.hp}")
+    def usar_pocao_cura(self: 'Player', ler_opcao) -> bool:
+        """ler_opcao: função(minimo, maximo) -> int. Retorna True se uma poção foi usada."""
+        pocoes = self.inventario.listar_pocoes_cura()
+
+        if not pocoes:
+            print("Você não tem nenhuma poção de cura no inventário!")
+            return False
+
+        print("\n=== POÇÕES DISPONÍVEIS ===")
+        for i, (item, quantidade) in enumerate(pocoes, start=1):
+            print(f"{i} - {item.nome} ({item.descricao_cura()}) x{quantidade}")
+        print(f"{len(pocoes) + 1} - Cancelar")
+
+        escolha = ler_opcao(1, len(pocoes) + 1)
+        if escolha == len(pocoes) + 1:
+            return False
+
+        item_escolhido, _ = pocoes[escolha - 1]
+        item_escolhido.use(self)
+        return True
 
     def atualizar_status(self: 'Player') -> None:
         self.ataque = self.ataque_base

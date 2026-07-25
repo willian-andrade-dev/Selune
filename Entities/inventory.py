@@ -1,4 +1,4 @@
-from Entities.item import Item
+from Entities.item import Item, Consumivel
 from collections import Counter
 
 class Inventory:
@@ -23,6 +23,19 @@ class Inventory:
             ja_mostrados.add(item.nome)
             quantidade = contagem[item.nome]
             print(f"{item} x{quantidade}")
+
+    def listar_pocoes_cura(self: 'Inventory') -> list:
+        """Retorna lista de tuplas (item, quantidade) únicas de poções de cura disponíveis."""
+        contagem = Counter(item.nome for item in self.itens)
+        nomes_vistos = set()
+        pocoes = []
+
+        for item in self.itens:
+            if isinstance(item, Consumivel) and item.eh_pocao_cura() and item.nome not in nomes_vistos:
+                nomes_vistos.add(item.nome)
+                pocoes.append((item, contagem[item.nome]))
+
+        return pocoes
 
     def procurar_item(self: 'Inventory', nome: str) -> 'Item':
         for item in self.itens:
