@@ -75,7 +75,7 @@ class Consumivel(Item):
     def eh_pocao_cura(self) -> bool:
         return self.funcao in self._CURA_FIXA or self.funcao == "curar_total"
 
-    def descricao_cura(self) -> str:
+    def descricao_efeito(self) -> str:
         if self.funcao == "curar_total":
             return "cura toda a vida"
         return f"cura {self._CURA_FIXA[self.funcao]} HP"

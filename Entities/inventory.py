@@ -1,4 +1,4 @@
-from Entities.item import Item, Consumivel
+from Entities.item import Item, Consumivel, Weapon, Armadura, Acessorio
 from collections import Counter
 
 class Inventory:
@@ -24,7 +24,7 @@ class Inventory:
             quantidade = contagem[item.nome]
             print(f"{item} x{quantidade}")
 
-    def listar_pocoes_cura(self: 'Inventory') -> list:
+    def listar_pocoes(self: 'Inventory') -> list:
         """Retorna lista de tuplas (item, quantidade) únicas de poções de cura disponíveis."""
         contagem = Counter(item.nome for item in self.itens)
         nomes_vistos = set()
@@ -36,6 +36,20 @@ class Inventory:
                 pocoes.append((item, contagem[item.nome]))
 
         return pocoes
+
+    def listar_equipaveis(self: 'Inventory') -> list:
+        """Retorna lista de tuplas (item, quantidade) únicas de armas, armaduras e acessórios."""
+        contagem = Counter(item.nome for item in self.itens)
+        nomes_vistos = set()
+        equipaveis = []
+
+        for item in self.itens:
+            eh_equipavel = isinstance(item, (Weapon, Armadura, Acessorio))
+            if eh_equipavel and item.nome not in nomes_vistos:
+                nomes_vistos.add(item.nome)
+                equipaveis.append((item, contagem[item.nome]))
+
+        return equipaveis
 
     def procurar_item(self: 'Inventory', nome: str) -> 'Item':
         for item in self.itens:

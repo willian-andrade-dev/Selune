@@ -48,17 +48,17 @@ class Player:
         print(f"Level: {self.level}")
 
 
-    def usar_pocao_cura(self: 'Player', ler_opcao) -> bool:
+    def usar_pocao(self: 'Player', ler_opcao) -> bool:
         """ler_opcao: função(minimo, maximo) -> int. Retorna True se uma poção foi usada."""
-        pocoes = self.inventario.listar_pocoes_cura()
+        pocoes = self.inventario.listar_pocoes()
 
         if not pocoes:
-            print("Você não tem nenhuma poção de cura no inventário!")
+            print("Você não tem nenhuma poção no inventário!")
             return False
 
         print("\n=== POÇÕES DISPONÍVEIS ===")
         for i, (item, quantidade) in enumerate(pocoes, start=1):
-            print(f"{i} - {item.nome} ({item.descricao_cura()}) x{quantidade}")
+            print(f"{i} - {item.nome} ({item.descricao_efeito()}) x{quantidade}")
         print(f"{len(pocoes) + 1} - Cancelar")
 
         escolha = ler_opcao(1, len(pocoes) + 1)

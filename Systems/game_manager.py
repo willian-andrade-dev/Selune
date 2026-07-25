@@ -38,6 +38,88 @@ class Game:
         escolha = self.ler_opcao("Escolha uma classe: ", 1, len(self.classes))
         return self.classes[escolha - 1]
 
+    def menu_personagem(self, player, player_id):
+        while True:
+            self.limpar_tela()
+            print("1 - Status")
+            print("2 - Equipamentos")
+            print("3 - Voltar")
+            escolha = self.ler_opcao("Escolha uma opção: ", 1, 3)
+
+            if escolha == 1:
+                player.mostrar_status()
+                input("\nPressione Enter para continuar...")
+
+            elif escolha == 2:
+                self.menu_equipamentos(player, player_id)
+
+            else:
+                break
+
+    def menu_equipamentos(self, player, player_id):
+        while True:
+            self.limpar_tela()
+            player.equipamento.mostrar_equipamento()
+            print("\n1 - Desequipar item")
+            print("2 - Ver equipamentos no inventário")
+            print("3 - Voltar")
+            escolha = self.ler_opcao("Escolha uma opção: ", 1, 3)
+
+            if escolha == 1:
+                self._desequipar_item(player, player_id)
+
+            elif escolha == 2:
+                self._mostrar_equipaveis_inventario(player, player_id)
+
+            else:
+                break
+
+    def _mostrar_equipaveis_inventario(self, player, player_id):
+        equipaveis = player.inventario.listar_equipaveis()
+
+        if not equipaveis:
+            print("Você não tem armas, armaduras ou acessórios no inventário.")
+            input("\nPressione Enter para voltar...")
+            return
+
+        print("\n=== ARMAS, ARMADURAS E ACESSÓRIOS ===")
+        for i, (item, quantidade) in enumerate(equipaveis, start=1):
+            print(f"{i} - {item} x{quantidade}")
+        print(f"{len(equipaveis) + 1} - Voltar")
+
+        escolha = self.ler_opcao("Escolha um item para equipar: ", 1, len(equipaveis) + 1)
+        if escolha == len(equipaveis) + 1:
+            return
+
+        item_escolhido, _ = equipaveis[escolha - 1]
+        item_escolhido.use(player)
+        salvar_player(player, player_id)
+        input("\nPressione Enter para continuar...")
+
+    def _desequipar_item(self, player, player_id):
+        print("\n1 - Arma")
+        print("2 - Armadura")
+        print("3 - Anel")
+        print("4 - Colar")
+        print("5 - Amuleto")
+        print("6 - Brinco")
+        print("7 - Cancelar")
+        escolha = self.ler_opcao("O que deseja desequipar? ", 1, 7)
+
+        if escolha == 1:
+            player.equipamento.desequipar_arma()
+        elif escolha == 2:
+            player.equipamento.desequipar_armadura()
+        elif escolha in (3, 4, 5, 6):
+            slots = {3: "Anel", 4: "Colar", 5: "Amuleto", 6: "Brinco"}
+            player.equipamento.desequipar_acessorio(slots[escolha])
+        else:
+            return
+
+        player.atualizar_status()
+        salvar_player(player, player_id)
+        input("\nPressione Enter para continuar...")
+
     def menu_inventario(self, player, player_id):
         while True:
             if not player.inventario.itens:
@@ -152,7 +234,7 @@ class Game:
             jogando = True
             while jogando:
                 self.limpar_tela()
-                print("1 - Mostrar status")
+                print("1 - Personagem")
                 print("2 - Explorar")
                 print("3 - Inventário")
                 print("4 - Loja")
@@ -160,8 +242,7 @@ class Game:
                 option = self.ler_opcao("Escolha uma opção: ", 1, 5)
 
                 if option == 1:
-                    player.mostrar_status()
-                    input("\nPressione Enter para continuar...")
+                    self.menu_personagem(player, player_id)
                 elif option == 2:
                     self.menu_explorar(player, player_id)
                 elif option == 3:
