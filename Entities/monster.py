@@ -17,6 +17,10 @@ class Monstro:
         self.drops = []  # lista de tuplas (Item, chance_drop 0-100), populada pelo monster_repository
 
     def atacar(self, player):
+        if random.random() < (player.esquiva / 100):
+            print(f"{player.nome} esquivou do ataque de {self.nome}!")
+            return
+
         dano_reduzido = max(self.ataque - player.armadura, 1)
         player.hp = max(player.hp - dano_reduzido, 0)
         print(f"Player HP: {player.hp}")

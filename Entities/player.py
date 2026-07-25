@@ -3,6 +3,7 @@ from Entities.inventory import Inventory
 from Entities.equipment import Equipment
 from Entities.classes import Classe
 from datetime import datetime, timedelta
+import random
 
 if TYPE_CHECKING:
     from Entities.monster import Monstro
@@ -23,6 +24,20 @@ class Player:
         self.ataque = ataque
         self.armadura_base = armadura
         self.armadura = armadura
+        self.critico = 0.0
+        self.dano_critico = 50.0       # multiplicador base de dano crítico (50% a mais)
+        self.esquiva = 0.0
+        self.precisao = 0.0
+        self.velocidade = 0.0
+        self.roubo_vida = 0.0
+        self.mana_por_turno = 0.0
+        self.hp_por_turno = 0.0
+        self.bonus_xp = 0.0             # %
+        self.bonus_ouro = 0.0           # %
+        self.resistencias = {
+            "fogo": 0.0, "gelo": 0.0, "raio": 0.0,
+            "veneno": 0.0, "trevas": 0.0, "luz": 0.0,
+        }
         self.classe_id = classe_id
         self.energia_maxima = 30
         self.energia_atual = 30
@@ -45,9 +60,23 @@ class Player:
         return int(BASE_XP * (GROWTH ** (self.level - 1)))
 
     def atacar(self: 'Player', monstro: 'Monstro') -> None:
-        print(f"HP: {monstro.hp}, Ataque: {monstro.ataque}")
-        monstro.hp = monstro.hp - self.ataque
-        print(f"{monstro.nome} HP: {monstro.hp}")
+        critico = random.random() < (self.critico / 100)
+        dano = self.ataque
+        if critico:
+            dano = int(dano * (1 + self.dano_critico / 100))
+
+        monstro.hp -= dano
+        prefixo = "CRÍTICO! " if critico else ""
+        print(f"{prefixo}{self.nome} causou {dano} de dano em {monstro.nome} (HP: {monstro.hp})")
+
+        if self.roubo_vida > 0:
+            cura = int(dano * (self.roubo_vida / 100))
+            if cura > 0:
+                hp_antes = self.hp
+                self.hp = min(self.hp + cura, self.hp_maximo)
+                curado = self.hp - hp_antes
+                if curado > 0:
+                    print(f"{self.nome} roubou {curado} de vida! HP: {self.hp}/{self.hp_maximo}")
 
     def mostrar_status(self: 'Player') -> None:
         print(f"Nome: {self.nome}") 
@@ -99,6 +128,11 @@ class Player:
         self.buffs_ativos = [b for b in self.buffs_ativos if b["turnos_restantes"] > 0]
         self.atualizar_status()
 
+    def _itens_equipados(self) -> list:
+        itens = [self.equipamento.arma, self.equipamento.armadura]
+        itens += list(self.equipamento.acessorios.values())
+        return [i for i in itens if i is not None]
+
     def atualizar_status(self: 'Player') -> None:
         self.ataque = self.ataque_base
         if self.equipamento.arma is not None:
@@ -114,6 +148,49 @@ class Player:
             elif buff["tipo"] == "buff_armadura":
                 self.armadura += buff["valor"]
 
+            # --- reseta e reagrega os stats secundários a partir dos item_effects ---
+        self.critico = 0.0
+        self.dano_critico = 50.0
+        self.esquiva = 0.0
+        self.precisao = 0.0
+        self.velocidade = 0.0
+        self.roubo_vida = 0.0
+        self.mana_por_turno = 0.0
+        self.hp_por_turno = 0.0
+        self.bonus_xp = 0.0
+        self.bonus_ouro = 0.0
+        self.resistencias = {k: 0.0 for k in self.resistencias}
+
+        for item in self._itens_equipados():
+            for efeito in item.efeitos:
+                atributo, valor = efeito["atributo"], efeito["valor"]
+                if atributo == "critico":
+                    self.critico += valor
+                elif atributo == "dano_critico":
+                    self.dano_critico += valor
+                elif atributo == "esquiva":
+                    self.esquiva += valor
+                elif atributo == "precisao":
+                    self.precisao += valor
+                elif atributo == "velocidade":
+                    self.velocidade += valor
+                elif atributo == "roubo_vida":
+                    self.roubo_vida += valor
+                elif atributo == "mana_por_turno":
+                    self.mana_por_turno += valor
+                elif atributo == "hp_por_turno":
+                    self.hp_por_turno += valor
+                elif atributo == "xp":
+                    self.bonus_xp += valor
+                elif atributo == "ouro":
+                    self.bonus_ouro += valor
+                elif atributo.startswith("resistencia_"):
+                    elemento = atributo.replace("resistencia_", "")
+                    if elemento in self.resistencias:
+                        self.resistencias[elemento] += valor
+                elif atributo in ("hp_maximo", "mana_maxima", "ataque", "armadura"):
+                    pass  # tratados à parte, se algum dia um acessório também bonificar isso direto
+
     def atualizar_cooldowns_turno(self: 'Player') -> None:
         if not self.cooldowns_habilidades:
             return
@@ -121,6 +198,12 @@ class Player:
             self.cooldowns_habilidades[hid] -= 1
             if self.cooldowns_habilidades[hid] <= 0:
                 del self.cooldowns_habilidades[hid]
+
+    def atualizar_regen_turno(self: 'Player') -> None:
+        if self.hp_por_turno > 0:
+            self.hp = min(self.hp + int(self.hp_por_turno), self.hp_maximo)
+        if self.mana_por_turno > 0:
+            self.mana += int(self.mana_por_turno)
 
     def subir_nivel(self: 'Player') -> None:
         while self.xp >= self.xp_para_upar:

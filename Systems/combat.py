@@ -110,6 +110,7 @@ class Combat:
             self.monstro.atacar(self.player)
             self.player.atualizar_buffs_turno()
             self.player.atualizar_cooldowns_turno()
+            self.player.atualizar_regen_turno()
 
         duracao = int((time.time() - inicio) * 1000)
 
@@ -126,9 +127,11 @@ class Combat:
             registrar_combate(self.player.id, self.monstro.id, 0, 0, False, duracao)
         else:
             print(f"Você derrotou {self.monstro.nome}!")
-            self.player.xp += self.monstro.xp
+            xp_ganho = int(self.monstro.xp * (1 + self.player.bonus_xp / 100))
+            ouro_ganho = int(self.monstro.ouro * (1 + self.player.bonus_ouro / 100))
+            self.player.xp += xp_ganho
             self.player.subir_nivel()
-            self.player.gold += self.monstro.ouro
+            self.player.gold += ouro_ganho
 
             itens_dropados = self.monstro.sortear_drops()
             for item in itens_dropados:
@@ -137,9 +140,8 @@ class Combat:
 
             if itens_dropados:
                 nomes = ", ".join(item.nome for item in itens_dropados)
-                print(f"Você ganhou {self.monstro.xp} de XP, {self.monstro.ouro} peças de Ouro "
-                      f"e dropou: {nomes}")
+                print(f"Você ganhou {xp_ganho} de XP, {ouro_ganho} peças de Ouro e dropou: {nomes}")
             else:
-                print(f"Você ganhou {self.monstro.xp} de XP, {self.monstro.ouro} peças de Ouro")
+                print(f"Você ganhou {xp_ganho} de XP, {ouro_ganho} peças de Ouro")
 
-            registrar_combate(self.player.id, self.monstro.id, self.monstro.xp, self.monstro.ouro, True, duracao)
+            registrar_combate(self.player.id, self.monstro.id, xp_ganho, ouro_ganho, True, duracao)
