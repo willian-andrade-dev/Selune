@@ -17,6 +17,14 @@ class Item:
     def __str__(self):
         return f"{self.nome} ({self.tipo}) [{self.raridade}] - {self.descricao}"
 
+    def pode_equipar(self: 'Item', player: 'Player') -> bool:
+        """Checa se o player tem nível suficiente para equipar este item."""
+        if player.level < self.nivel_requerido:
+            print(f"Você precisa ser nível {self.nivel_requerido} para equipar {self.nome} "
+                  f"(seu nível: {player.level}).")
+            return False
+        return True
+
 
 class Armadura(Item):
     tipo = 'Armadura'
@@ -27,11 +35,13 @@ class Armadura(Item):
         self.armadura = armadura
         self.efeitos = efeitos or []  # bônus extra (item_effects), ainda não aplicados aos stats do player
 
-    def use(self: 'Armadura', player: 'Player') -> None:
+    def use(self: 'Armadura', player: 'Player') -> bool:
+        if not self.pode_equipar(player):
+            return False
         player.equipamento.equipar_armadura(self)
         player.atualizar_status()
         print(f"Sua armadura atual: {player.armadura}")
-
+        return True
 
 class Weapon(Item):
     tipo = 'Arma'
@@ -42,10 +52,13 @@ class Weapon(Item):
         self.dano = dano
         self.efeitos = efeitos or []  # bônus extra (item_effects), ainda não aplicados aos stats do player
 
-    def use(self: 'Weapon', player: 'Player') -> None:
+    def use(self: 'Weapon', player: 'Player') -> bool:
+        if not self.pode_equipar(player):
+            return False
         player.equipamento.equipar_arma(self)
         player.atualizar_status()
         print(f"Seu ataque atual: {player.ataque}")
+        return True
 
 
 class Consumivel(Item):
@@ -133,9 +146,11 @@ class Acessorio(Item):
         self.efeitos = efeitos or []  # bônus extra (item_effects), ainda não aplicados aos stats do player
 
     def use(self: 'Acessorio', player: 'Player') -> None:
+        if not self.pode_equipar(player):
+            return False
         player.equipamento.equipar_acessorio(self)
         print(f"{self.nome} equipado! (efeitos de item_effects ainda não são aplicados aos stats)")
-
+        return True
 
 class Loot(Item):
     tipo = 'Loot'
