@@ -1,5 +1,6 @@
 from Entities.player import Player
 from Systems.combat import Combat
+from Systems.shop import Shop
 from Database.player_repository import criar_player, buscar_player, salvar_player
 from Database.item_repository import carregar_itens
 from Database.monster_repository import carregar_monstros
@@ -96,8 +97,9 @@ class Game:
                 print("2 - Atacar criatura")
                 print("3 - Se curar")
                 print("4 - Inventário")
-                print("5 - Log Out")
-                option = self.ler_opcao("Escolha uma opção: ", 1, 5)
+                print("5 - Loja")
+                print("6 - Log Out")
+                option = self.ler_opcao("Escolha uma opção: ", 1, 6)
 
                 if option == 1:
                     player.mostrar_status()
@@ -120,6 +122,10 @@ class Game:
                     self.menu_inventario(player, player_id)
 
                 elif option == 5:
+                    Shop(player, player_id).abrir()
+                    salvar_player(player, player_id)
+
+                elif option == 6:
                     print(f"See you later, {player.nome}")
                     jogando = False
 
