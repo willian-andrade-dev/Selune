@@ -10,7 +10,9 @@ if TYPE_CHECKING:
 
 class Player:
     def __init__(self: 'Player', nome: str, hp: int, mana: int, gold: int, xp: int, level: int,
-                 ataque: int, armadura: int, classe_id: int) -> None:
+                 ataque: int, armadura: int, classe_id: int, hp_regen_base: float = 0,
+                 hp_regen_por_nivel: float = 0, mana_regen_base: float  = 0,
+                 mana_regen_por_nivel: float = 0) -> None:
         self.id = None
         self.nome = nome
         self.hp_maximo = hp
@@ -39,6 +41,10 @@ class Player:
             "veneno": 0.0, "trevas": 0.0, "luz": 0.0,
         }
         self.classe_id = classe_id
+        self.hp_regen_base = hp_regen_base
+        self.hp_regen_por_nivel = hp_regen_por_nivel
+        self.mana_regen_base = mana_regen_base
+        self.mana_regen_por_nivel = mana_regen_por_nivel
         self.energia_maxima = 30
         self.energia_atual = 30
         self.cansado_desde = None
@@ -128,6 +134,15 @@ class Player:
         self.buffs_ativos = [b for b in self.buffs_ativos if b["turnos_restantes"] > 0]
         self.atualizar_status()
 
+    def atualizar_cooldowns_turno(self: 'Player') -> None:
+        """Decrementa 1 turno de cada cooldown ativo e remove os que zeraram."""
+        if not self.cooldowns_habilidades:
+            return
+        for habilidade_id in list(self.cooldowns_habilidades):
+            self.cooldowns_habilidades[habilidade_id] -= 1
+            if self.cooldowns_habilidades[habilidade_id] <= 0:
+                del self.cooldowns_habilidades[habilidade_id]
+
     def _itens_equipados(self) -> list:
         itens = [self.equipamento.arma, self.equipamento.armadura]
         itens += list(self.equipamento.acessorios.values())
@@ -191,19 +206,20 @@ class Player:
                 elif atributo in ("hp_maximo", "mana_maxima", "ataque", "armadura"):
                     pass  # tratados à parte, se algum dia um acessório também bonificar isso direto
 
-    def atualizar_cooldowns_turno(self: 'Player') -> None:
-        if not self.cooldowns_habilidades:
-            return
-        for hid in list(self.cooldowns_habilidades):
-            self.cooldowns_habilidades[hid] -= 1
-            if self.cooldowns_habilidades[hid] <= 0:
-                del self.cooldowns_habilidades[hid]
+    def _passiva_hp_regen(self) -> float:
+        return self.hp_regen_base + self.hp_regen_por_nivel * (self.level - 1)
+
+    def _passiva_mana_regen(self) -> float:
+        return self.mana_regen_base + self.mana_regen_por_nivel * (self.level - 1)
 
     def atualizar_regen_turno(self: 'Player') -> None:
-        if self.hp_por_turno > 0:
-            self.hp = min(self.hp + int(self.hp_por_turno), self.hp_maximo)
-        if self.mana_por_turno > 0:
-            self.mana += int(self.mana_por_turno)
+        hp_regen_total = self._passiva_hp_regen() + self.hp_por_turno       # classe + itens
+        mana_regen_total = self._passiva_mana_regen() + self.mana_por_turno
+
+        if hp_regen_total > 0:
+            self.hp = min(self.hp + int(hp_regen_total), self.hp_maximo)
+        if mana_regen_total > 0:
+            self.mana += int(mana_regen_total)
 
     def subir_nivel(self: 'Player') -> None:
         while self.xp >= self.xp_para_upar:

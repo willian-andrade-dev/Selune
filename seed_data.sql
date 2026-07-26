@@ -693,11 +693,11 @@ INSERT INTO monster_drops (monster_id, item_id, chance_drop) VALUES
 ((SELECT id FROM monsters WHERE nome='Guardião Ancestral'), (SELECT id FROM items WHERE nome='Colar de Selune'), 10.00);
 
 -- ================= CLASSES =================
-INSERT INTO classes (nome, descricao, hp_base, mana_base, ataque_base, armadura_base) VALUES
-('Guerreiro', 'Combatente resistente, focado em dano físico e defesa.', 30, 10, 12, 5),
-('Mago', 'Conjurador frágil, com dano mágico alto e pouca vida.', 18, 40, 6, 1),
-('Clérigo', 'Suporte com foco em cura e mana, resistência mediana.', 22, 35, 8, 3),
-('Arqueiro', 'Ataques precisos à distância, equilíbrio entre dano e mana.', 22, 20, 10, 2);
+INSERT INTO classes (nome, descricao, hp_base, mana_base, ataque_base, armadura_base, hp_regen_base, hp_regen_por_nivel, mana_regen_base, mana_regen_por_nivel) VALUES
+('Guerreiro', 'Combatente resistente, focado em dano físico e defesa.', 30, 10, 12, 5, 8, 0.5, 0, 0),
+('Mago', 'Conjurador frágil, com dano mágico alto e pouca vida.', 18, 40, 6, 1, 0, 0, 4, 0.3),
+('Clérigo', 'Suporte com foco em cura e mana, resistência mediana.', 22, 35, 8, 3, 4, 0.2, 3, 0.2),
+('Arqueiro', 'Ataques precisos à distância, equilíbrio entre dano e mana.', 22, 20, 10, 2, 6, 0.3, 2, 0.15);
 
 -- ================= HABILIDADES =================
 INSERT INTO habilidades (classe_id, nome, descricao, nivel_requerido, custo_mana, tipo, valor, duracao_turnos, cooldown_turnos) VALUES

@@ -20,14 +20,16 @@ class CharacterCreation:
         return None
 
     def criar_personagem(self, nome: str, classe_escolhida) -> tuple:
-        player_id = criar_player(
-            nome, classe_escolhida.hp_base, classe_escolhida.hp_base, classe_escolhida.mana_base,
-            100, 0, 75, 1, classe_escolhida.ataque_base, classe_escolhida.ataque_base,
-            classe_escolhida.armadura_base, classe_escolhida.armadura_base, classe_escolhida.id
-        )
         player = Player(
             nome, classe_escolhida.hp_base, classe_escolhida.mana_base, 100, 0, 1,
-            classe_escolhida.ataque_base, classe_escolhida.armadura_base, classe_escolhida.id
+            classe_escolhida.ataque_base, classe_escolhida.armadura_base, classe_escolhida.id,
+            classe_escolhida.hp_regen_base, classe_escolhida.hp_regen_por_nivel,
+            classe_escolhida.mana_regen_base, classe_escolhida.mana_regen_por_nivel
+        )
+        player_id = criar_player(
+            nome, classe_escolhida.hp_base, classe_escolhida.hp_base, classe_escolhida.mana_base,
+            100, 0, player.xp_para_upar, 1, classe_escolhida.ataque_base, classe_escolhida.ataque_base,
+            classe_escolhida.armadura_base, classe_escolhida.armadura_base, classe_escolhida.id
         )
         player.id = player_id
         self._dar_equipamento_inicial(player, classe_escolhida, player_id)

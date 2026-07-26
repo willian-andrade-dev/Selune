@@ -101,7 +101,11 @@ CREATE TABLE IF NOT EXISTS classes (
     hp_base INT NOT NULL,
     mana_base INT NOT NULL,
     ataque_base INT NOT NULL,
-    armadura_base INT NOT NULL
+    armadura_base INT NOT NULL,
+    hp_regen_base NUMERIC DEFAULT 0,
+    hp_regen_por_nivel NUMERIC DEFAULT 0,
+    mana_regen_base NUMERIC DEFAULT 0,
+    mana_regen_por_nivel NUMERIC DEFAULT 0
 );
 
 -- PLAYERS (não depende de nenhuma outra tabela)

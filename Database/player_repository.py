@@ -27,14 +27,25 @@ def buscar_player(id_player: int) -> Optional[Player]:
     cursor.execute("SELECT * FROM players WHERE id = %s", (id_player,))
     linha = cursor.fetchone()
 
-    cursor.close()
-    conexao.close()
-
     if linha is None:
+        cursor.close()
+        conexao.close()
         return None
-    
+
     id, nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base, classe_id = linha
-    player = Player(nome, hp, mana, gold, xp, level, ataque_base, armadura_base, classe_id)
+
+    cursor.execute("""
+    SELECT hp_regen_base, hp_regen_por_nivel, mana_regen_base, mana_regen_por_nivel
+    FROM classes WHERE id = %s
+    """, (classe_id,))
+    regen = cursor.fetchone()
+    if regen:
+        hp_regen_base, hp_regen_por_nivel, mana_regen_base, mana_regen_por_nivel = (float(x) for x in regen)
+    else:
+        hp_regen_base = hp_regen_por_nivel = mana_regen_base = mana_regen_por_nivel = 0.0
+
+    player = Player(nome, hp, mana, gold, xp, level, ataque_base, armadura_base, classe_id,
+                     hp_regen_base, hp_regen_por_nivel, mana_regen_base, mana_regen_por_nivel)
     player.id = id
     player.hp_maximo = hp_maximo
     player.xp_para_upar = xp_para_upar
