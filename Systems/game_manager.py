@@ -10,6 +10,7 @@ from Database.class_repository import carregar_classes, carregar_habilidades
 from World.location import Localização
 from Systems.exploration import Exploration
 from Systems.character_creation import CharacterCreation
+from Database.equipment_repository import desequipar_item
 import os
 
 from typing import TYPE_CHECKING
@@ -109,11 +110,15 @@ class Game:
 
         if escolha == 1:
             player.equipamento.desequipar_arma()
+            desequipar_item(player_id, "arma")
         elif escolha == 2:
             player.equipamento.desequipar_armadura()
+            desequipar_item(player_id, "armadura")
         elif escolha in (3, 4, 5, 6):
             slots = {3: "Anel", 4: "Colar", 5: "Amuleto", 6: "Brinco"}
-            player.equipamento.desequipar_acessorio(slots[escolha])
+            slot = slots[escolha]
+            player.equipamento.desequipar_acessorio(slot)
+            desequipar_item(player_id, slot)
         else:
             return
 
@@ -216,7 +221,7 @@ class Game:
 
             elif opcao_inicial == 2:
                 player_id = self.ler_opcao("Digite o ID do seu personagem: ", 1, 999999)
-                player = buscar_player(player_id)
+                player = buscar_player(player_id, self.itens)   
                 if player is None:
                     print("Personagem não encontrado.")
                     continue

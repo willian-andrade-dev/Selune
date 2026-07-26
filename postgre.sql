@@ -129,6 +129,24 @@ CREATE TABLE IF NOT EXISTS players (
         REFERENCES classes(id)
 );
 
+CREATE TABLE IF NOT EXISTS player_equipment (
+    player_id INTEGER NOT NULL,
+    slot VARCHAR(20) NOT NULL,
+    item_id INTEGER NOT NULL,
+    PRIMARY KEY (player_id, slot),
+    FOREIGN KEY (player_id) REFERENCES players(id),
+    FOREIGN KEY (item_id) REFERENCES items(id),
+    CONSTRAINT chk_player_equipment_slot
+        CHECK (slot IN (
+            'arma', 
+            'armadura', 
+            'Anel', 
+            'Colar', 
+            'Amuleto', 
+            'Brinco'
+        ))
+);
+
 CREATE TABLE IF NOT EXISTS habilidades (
     id SERIAL PRIMARY KEY,
     classe_id INTEGER NOT NULL,

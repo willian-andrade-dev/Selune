@@ -1,4 +1,5 @@
 from Database.inventory_repository import remover_item_inventario
+from Database.equipment_repository import equipar_item
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -40,6 +41,7 @@ class Armadura(Item):
             return False
         player.equipamento.equipar_armadura(self)
         player.atualizar_status()
+        equipar_item(player.id, "armadura", self.id)
         print(f"Sua armadura atual: {player.armadura}")
         return True
 
@@ -57,9 +59,9 @@ class Weapon(Item):
             return False
         player.equipamento.equipar_arma(self)
         player.atualizar_status()
+        equipar_item(player.id, "arma", self.id)
         print(f"Seu ataque atual: {player.ataque}")
         return True
-
 
 class Consumivel(Item):
     tipo = 'Consumivel'
@@ -145,11 +147,13 @@ class Acessorio(Item):
         self.subtipo = subtipo  # Anel, Colar, Amuleto ou Brinco
         self.efeitos = efeitos or []  # bônus extra (item_effects), ainda não aplicados aos stats do player
 
-    def use(self: 'Acessorio', player: 'Player') -> None:
+    def use(self: 'Acessorio', player: 'Player') -> bool:
         if not self.pode_equipar(player):
             return False
         player.equipamento.equipar_acessorio(self)
-        print(f"{self.nome} equipado! (efeitos de item_effects ainda não são aplicados aos stats)")
+        player.atualizar_status() 
+        equipar_item(player.id, self.subtipo, self.id)
+        print(f"{self.nome} equipado!")
         return True
 
 class Loot(Item):

@@ -1,6 +1,7 @@
 from typing import Optional
 from Database.connection import conectar
 from Entities.player import Player
+from Database.equipment_repository import buscar_equipamento
 
 def criar_player(nome: str, hp: int, hp_maximo: int, mana: int, gold: int, xp: int, xp_para_upar: int,
                   level: int, ataque_base: int, ataque: int, armadura: int, armadura_base: int,
@@ -20,7 +21,7 @@ def criar_player(nome: str, hp: int, hp_maximo: int, mana: int, gold: int, xp: i
     conexao.close()
     return player_id
 
-def buscar_player(id_player: int) -> Optional[Player]:
+def buscar_player(id_player: int, itens: dict = None) -> Optional[Player]:
     conexao = conectar()
     cursor = conexao.cursor()
 
@@ -51,6 +52,19 @@ def buscar_player(id_player: int) -> Optional[Player]:
     player.xp_para_upar = xp_para_upar
     player.ataque = ataque
     player.armadura = armadura
+
+    if itens is not None:
+        equipados = buscar_equipamento(id)
+        if "arma" in equipados:
+            player.equipamento.equipar_arma(itens[equipados["arma"]])
+        if "armadura" in equipados:
+            player.equipamento.equipar_armadura(itens[equipados["armadura"]])
+        for slot in ("Anel", "Colar", "Amuleto", "Brinco"):
+            if slot in equipados:
+                player.equipamento.equipar_acessorio(itens[equipados[slot]])
+        if equipados:
+            player.atualizar_status()
+
     return player
 
 def update_player(id_player: int, gold: int, level: int, xp: int) -> None:
