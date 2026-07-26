@@ -15,6 +15,7 @@ class Combat:
         self.localizacao = localizacao
         self.habilidades = habilidades
         self.fugiu = False
+        self.player.cooldowns_habilidades = []
 
     def _ler_opcao(self, minimo: int, maximo: int) -> int:
         while True:
@@ -33,7 +34,6 @@ class Combat:
             return True
         print(f"{self.player.nome} tentou fugir, mas não conseguiu!")
         return False
-
 
     def _usar_habilidade_turno(self) -> bool:
         disponiveis = self.player.habilidades_disponiveis(self.habilidades)
@@ -55,27 +55,6 @@ class Combat:
         habilidade = disponiveis[escolha - 1]
         return habilidade.usar(self.player, self.monstro)
 
-    def _curar_turno(self) -> bool:
-        """Retorna True se o turno foi consumido (poção usada), False se cancelado/sem poções."""
-        pocoes = self.player.inventario.listar_pocoes_cura()
-
-        if not pocoes:
-            print("Você não tem nenhuma poção de cura no inventário!")
-            return False
-
-        print("\n=== POÇÕES DISPONÍVEIS ===")
-        for i, (item, quantidade) in enumerate(pocoes, start=1):
-            print(f"{i} - {item.nome} ({item.descricao_cura()}) x{quantidade}")
-        print(f"{len(pocoes) + 1} - Cancelar")
-
-        escolha = self._ler_opcao(1, len(pocoes) + 1)
-        if escolha == len(pocoes) + 1:
-            return False
-
-        item_escolhido, _ = pocoes[escolha - 1]
-        item_escolhido.use(self.player)
-        return True
-
     def start(self: 'Combat') -> None:
         inicio = time.time()
         print(f"Você encontrou um {self.monstro.nome} em {self.localizacao.nome}!")
@@ -84,7 +63,7 @@ class Combat:
             print(f"\n{self.player.nome} HP: {self.player.hp}/{self.player.hp_maximo}  |  "
                   f"{self.monstro.nome} HP: {self.monstro.hp}")
             print("1 - Atacar")
-            print("2 - Se curar")
+            print("2 - Usar poção")
             print("3 - Usar habilidade")
             print("4 - Fugir")
             escolha = self._ler_opcao(1, 4)
@@ -92,7 +71,7 @@ class Combat:
             if escolha == 1:
                 self.player.atacar(self.monstro)
             elif escolha == 2:
-                turno_usado = self.player.usar_pocao_cura(self._ler_opcao)
+                turno_usado = self.player.usar_pocao(self._ler_opcao)
                 if not turno_usado:
                     continue
             elif escolha == 3:
@@ -104,13 +83,14 @@ class Combat:
                     self.fugiu = True
                     break
 
+            self.player.atualizar_buffs_turno()
+            self.player.atualizar_cooldowns_turno()
+            self.player.atualizar_regen_turno()
+
             if self.monstro.hp <= 0:
                 break
 
             self.monstro.atacar(self.player)
-            self.player.atualizar_buffs_turno()
-            self.player.atualizar_cooldowns_turno()
-            self.player.atualizar_regen_turno()
 
         duracao = int((time.time() - inicio) * 1000)
 

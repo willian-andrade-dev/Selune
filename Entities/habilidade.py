@@ -19,9 +19,11 @@ class Habilidade:
         self.cooldown_turnos = cooldown_turnos
 
     def usar(self, player: 'Player', monstro=None) -> bool:
-        cooldown_restante = player.cooldowns_habilidades.get(self.id, 0)
-        if cooldown_restante > 0:
-            print(f"{self.nome} está em cooldown! Faltam {cooldown_restante} turno(s).")
+        # cooldowns_habilidades guarda turnos RESTANTES (não turno absoluto) —
+        # reseta sozinho a cada novo Combat, já que o dict é zerado no início dele.
+        turnos_restantes = player.cooldowns_habilidades.get(self.id, 0)
+        if turnos_restantes > 0:
+            print(f"{self.nome} está em cooldown! Faltam {turnos_restantes} turno(s).")
             return False
 
         if player.mana < self.custo_mana:
