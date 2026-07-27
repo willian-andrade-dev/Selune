@@ -1,6 +1,9 @@
 import random
 import copy
 
+from Systems.monster_utils import monstros_da_localizacao
+
+
 class Exploration:
     def __init__(self, localizacoes: list, monstros: list) -> None:
         self.localizacoes = localizacoes
@@ -9,11 +12,8 @@ class Exploration:
     def localizacoes_ordenadas(self) -> list:
         return sorted(self.localizacoes, key=lambda loc: loc.dificuldade)
 
-    def monstros_da_localizacao(self, localizacao) -> list:
-        return [m for m in self.monstros if localizacao.id in m.location_ids]
-
     def sortear_monstro(self, localizacao):
-        disponiveis = self.monstros_da_localizacao(localizacao)
+        disponiveis = monstros_da_localizacao(self.monstros, localizacao)
         if not disponiveis:
             return None
         return copy.deepcopy(random.choice(disponiveis))
