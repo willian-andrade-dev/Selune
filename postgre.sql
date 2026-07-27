@@ -266,6 +266,84 @@ CREATE TABLE IF NOT EXISTS shop_items (
     UNIQUE(item_id)
 );
 
+CREATE TABLE IF NOT EXISTS recipes (
+ 
+    id SERIAL PRIMARY KEY,
+    item_resultado_id INTEGER NOT NULL,
+    quantidade_produzida INTEGER NOT NULL DEFAULT 1,
+    nivel_crafting_minimo INTEGER NOT NULL DEFAULT 1,
+    tipo_estacao VARCHAR(20) NOT NULL,
+ 
+    CONSTRAINT fk_recipe_item_resultado
+        FOREIGN KEY (item_resultado_id) REFERENCES items(id),
+ 
+    CONSTRAINT chk_recipe_tipo_estacao
+        CHECK (tipo_estacao IN ('ferraria', 'alquimia', 'arcanismo'))
+);
+
+CREATE TABLE IF NOT EXISTS recipe_ingredients (
+ 
+    recipe_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    quantidade_necessaria INTEGER NOT NULL,
+ 
+    PRIMARY KEY (recipe_id, item_id),
+ 
+    CONSTRAINT fk_ingredient_recipe
+        FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+ 
+    CONSTRAINT fk_ingredient_item
+        FOREIGN KEY (item_id) REFERENCES items(id)
+);
+
+CREATE TABLE IF NOT EXISTS player_crafting (
+ 
+    player_id INTEGER PRIMARY KEY,
+    nivel INTEGER NOT NULL DEFAULT 1,
+    xp INTEGER NOT NULL DEFAULT 0,
+ 
+    CONSTRAINT fk_player_crafting_player
+        FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS location_stations (
+ 
+    location_id INTEGER NOT NULL,
+    tipo_estacao VARCHAR(20) NOT NULL,
+ 
+    PRIMARY KEY (location_id, tipo_estacao),
+ 
+    CONSTRAINT fk_location_station_location
+        FOREIGN KEY (location_id) REFERENCES locations(id),
+ 
+    CONSTRAINT chk_location_station_tipo
+        CHECK (tipo_estacao IN ('ferraria', 'alquimia', 'arcanismo'))
+);
+
+-- CIDADES (não depende de nenhuma outra tabela)
+CREATE TABLE IF NOT EXISTS cidades (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL UNIQUE,
+    regiao VARCHAR(50) NOT NULL,
+    descricao VARCHAR(200)
+);
+ 
+-- BANCADAS (depende de CIDADES) — toda cidade tem as 4, criadas automaticamente via trigger
+CREATE TABLE IF NOT EXISTS bancadas (
+    id SERIAL PRIMARY KEY,
+    cidade_id INTEGER NOT NULL,
+    tipo VARCHAR(20) NOT NULL,
+ 
+    FOREIGN KEY (cidade_id)
+        REFERENCES cidades(id)
+        ON DELETE CASCADE,
+ 
+    UNIQUE(cidade_id, tipo),
+ 
+    CONSTRAINT chk_bancada_tipo
+        CHECK (tipo IN ('Ferraria', 'Alquimia', 'Joalheria', 'Arcanismo'))
+);
+
 -- TRIGGER: toda vez que um item novo é inserido, entra automaticamente na loja.
 -- Loot vende por preço cheio e não é comprável; os demais tipos vendem por 50% do valor.
 CREATE OR REPLACE FUNCTION fn_shop_items_auto_insert()
@@ -289,4 +367,24 @@ CREATE TRIGGER trg_shop_items_auto_insert
 AFTER INSERT ON items
 FOR EACH ROW
 EXECUTE FUNCTION fn_shop_items_auto_insert();
+
+-- TRIGGER: toda cidade nova ganha as 4 bancadas automaticamente
+CREATE OR REPLACE FUNCTION fn_bancadas_auto_insert()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO bancadas (cidade_id, tipo) VALUES
+        (NEW.id, 'Ferraria'),
+        (NEW.id, 'Alquimia'),
+        (NEW.id, 'Joalheria'),
+        (NEW.id, 'Arcanismo');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+ 
+DROP TRIGGER IF EXISTS trg_bancadas_auto_insert ON cidades;
+ 
+CREATE TRIGGER trg_bancadas_auto_insert
+AFTER INSERT ON cidades
+FOR EACH ROW
+EXECUTE FUNCTION fn_bancadas_auto_insert();
 

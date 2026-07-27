@@ -11,6 +11,8 @@ from World.location import Localização
 from Systems.exploration import Exploration
 from Systems.character_creation import CharacterCreation
 from Database.equipment_repository import desequipar_item
+from Systems.city import CityMenu
+from Database.city_repository import carregar_cidades
 import os
 
 from typing import TYPE_CHECKING
@@ -26,6 +28,7 @@ class Game:
         self.localizacoes = carregar_localizacoes()
         self.classes = carregar_classes()
         self.habilidades = carregar_habilidades()
+        self.cidades = carregar_cidades()
         self.exploration = Exploration(self.localizacoes, self.monstros)
         self.character_creation = CharacterCreation(self.itens)
 
@@ -244,8 +247,9 @@ class Game:
                 print("2 - Explorar")
                 print("3 - Inventário")
                 print("4 - Loja")
-                print("5 - Log Out")
-                option = self.ler_opcao("Escolha uma opção: ", 1, 5)
+                print("5 - Cidades")
+                print("6 - Log Out")
+                option = self.ler_opcao("Escolha uma opção: ", 1, 6)
 
                 if option == 1:
                     self.menu_personagem(player, player_id)
@@ -257,6 +261,8 @@ class Game:
                     Shop(player, player_id).abrir()
                     salvar_player(player, player_id)
                 elif option == 5:
+                    CityMenu(self.cidades).abrir()
+                elif option == 6:
                     print(f"See you later, {player.nome}")
                     jogando = False
                 else:
