@@ -3,6 +3,7 @@ from Entities.inventory import Inventory
 from Entities.equipment import Equipment
 from Entities.classes import Classe
 from datetime import datetime, timedelta
+from Entities.crafting_skill import CraftingSkill
 import random
 
 if TYPE_CHECKING:
@@ -18,6 +19,7 @@ class Player:
         self.hp_maximo = hp
         self.hp = hp
         self.mana = mana
+        self.mana_maximo = mana
         self.gold = gold
         self.xp = xp
         self.level = level
@@ -45,12 +47,14 @@ class Player:
         self.hp_regen_por_nivel = hp_regen_por_nivel
         self.mana_regen_base = mana_regen_base
         self.mana_regen_por_nivel = mana_regen_por_nivel
+        self.gold_banco = 0
         self.energia_maxima = 30
         self.energia_atual = 30
         self.cansado_desde = None
         self.buffs_ativos = []
         self.inventario = Inventory()
         self.equipamento = Equipment()
+        self.crafting_skill = CraftingSkill()
         self.cooldowns_habilidades = {}
 
     def __str__(self):
@@ -219,7 +223,7 @@ class Player:
         if hp_regen_total > 0:
             self.hp = min(self.hp + int(hp_regen_total), self.hp_maximo)
         if mana_regen_total > 0:
-            self.mana += int(mana_regen_total)
+            self.mana = min(self.mana + int(mana_regen_total), self.mana_maximo)
 
     def subir_nivel(self: 'Player') -> None:
         while self.xp >= self.xp_para_upar:
