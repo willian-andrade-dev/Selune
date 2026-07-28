@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS items (
     dano INTEGER,
     armadura INTEGER,
     raridade VARCHAR(20) NOT NULL,
+    familia_material VARCHAR(20),
     subtipo VARCHAR(20),
 
     CONSTRAINT chk_item_tipo
@@ -19,7 +20,8 @@ CREATE TABLE IF NOT EXISTS items (
             'Armadura',
             'Consumivel',
             'Acessorio',
-            'Loot'
+            'Loot',
+            'Material'
         )),
 
     CONSTRAINT chk_item_raridade
@@ -32,6 +34,15 @@ CREATE TABLE IF NOT EXISTS items (
             'Mítico',
             'Artefato',
             'Relíquia'
+        )),
+
+    CONSTRAINT chk_familia_material
+        CHECK (familia_material IS NULL OR familia_material IN(
+            'Mineral',
+            'Cristal',
+            'Planta',
+            'Madeira',
+            'Essencia'
         )),
 
     -- subtipo só existe pra Acessorio (Anel, Colar, Amuleto, Brinco); NULL pra qualquer outro tipo
@@ -123,6 +134,7 @@ CREATE TABLE IF NOT EXISTS players (
     ataque INTEGER NOT NULL,
     armadura INTEGER NOT NULL,
     armadura_base INTEGER NOT NULL,
+    gold_banco INTEGER NOT NULL DEFAULT 0,
     classe_id INTEGER NOT NULL,
 
     FOREIGN KEY (classe_id)
@@ -278,7 +290,7 @@ CREATE TABLE IF NOT EXISTS recipes (
         FOREIGN KEY (item_resultado_id) REFERENCES items(id),
  
     CONSTRAINT chk_recipe_tipo_estacao
-        CHECK (tipo_estacao IN ('ferraria', 'alquimia', 'arcanismo'))
+        CHECK (tipo_estacao IN ('ferraria', 'alquimia', 'arcanismo', 'Arcanismo'))
 );
 
 CREATE TABLE IF NOT EXISTS recipe_ingredients (
@@ -306,20 +318,6 @@ CREATE TABLE IF NOT EXISTS player_crafting (
         FOREIGN KEY (player_id) REFERENCES players(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS location_stations (
- 
-    location_id INTEGER NOT NULL,
-    tipo_estacao VARCHAR(20) NOT NULL,
- 
-    PRIMARY KEY (location_id, tipo_estacao),
- 
-    CONSTRAINT fk_location_station_location
-        FOREIGN KEY (location_id) REFERENCES locations(id),
- 
-    CONSTRAINT chk_location_station_tipo
-        CHECK (tipo_estacao IN ('ferraria', 'alquimia', 'arcanismo'))
-);
-
 -- CIDADES (não depende de nenhuma outra tabela)
 CREATE TABLE IF NOT EXISTS cidades (
     id SERIAL PRIMARY KEY,
@@ -342,6 +340,19 @@ CREATE TABLE IF NOT EXISTS bancadas (
  
     CONSTRAINT chk_bancada_tipo
         CHECK (tipo IN ('Ferraria', 'Alquimia', 'Joalheria', 'Arcanismo'))
+);
+
+CREATE TABLE IF NOT EXISTS events (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    tipo VARCHAR(30) NOT NULL  -- 'combate_direto', 'acampamento', 'descanso', 'coleta'
+);
+
+CREATE TABLE IF NOT EXISTS location_events (
+    location_id INTEGER NOT NULL REFERENCES locations(id),
+    event_id INTEGER NOT NULL REFERENCES events(id),
+    peso INTEGER NOT NULL,
+    PRIMARY KEY (location_id, event_id)
 );
 
 -- TRIGGER: toda vez que um item novo é inserido, entra automaticamente na loja.
@@ -387,4 +398,46 @@ CREATE TRIGGER trg_bancadas_auto_insert
 AFTER INSERT ON cidades
 FOR EACH ROW
 EXECUTE FUNCTION fn_bancadas_auto_insert();
+
+-- Funciona para qualquer receita futura, só chamando com parâmetros diferentes
+CREATE OR REPLACE FUNCTION fn_seed_receita(
+    p_nome_resultado TEXT,
+    p_quantidade_produzida INT,
+    p_nivel_crafting_minimo INT,
+    p_tipo_estacao VARCHAR,
+    p_ingredientes JSONB  -- formato: '[{"nome": "Minério de Cobre", "qty": 3}, ...]'
+) RETURNS VOID AS $$
+DECLARE
+    v_item_id INT;
+    v_recipe_id INT;
+    v_esperado INT;
+    v_encontrado INT;
+BEGIN
+    SELECT id INTO v_item_id FROM items WHERE nome = p_nome_resultado;
+    IF v_item_id IS NULL THEN
+        RAISE NOTICE 'Pulado (item resultado não encontrado): %', p_nome_resultado;
+        RETURN;
+    END IF;
+ 
+    v_esperado := jsonb_array_length(p_ingredientes);
+ 
+    SELECT COUNT(*) INTO v_encontrado
+    FROM jsonb_to_recordset(p_ingredientes) AS ing(nome TEXT, qty INT)
+    JOIN items ON items.nome = ing.nome;
+ 
+    IF v_encontrado <> v_esperado THEN
+        RAISE NOTICE 'Pulado (ingrediente ausente): %', p_nome_resultado;
+        RETURN;
+    END IF;
+ 
+    INSERT INTO recipes (item_resultado_id, quantidade_produzida, nivel_crafting_minimo, tipo_estacao)
+    VALUES (v_item_id, p_quantidade_produzida, p_nivel_crafting_minimo, p_tipo_estacao)
+    RETURNING id INTO v_recipe_id;
+ 
+    INSERT INTO recipe_ingredients (recipe_id, item_id, quantidade_necessaria)
+    SELECT v_recipe_id, items.id, ing.qty
+    FROM jsonb_to_recordset(p_ingredientes) AS ing(nome TEXT, qty INT)
+    JOIN items ON items.nome = ing.nome;
+END;
+$$ LANGUAGE plpgsql;
 

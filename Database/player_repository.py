@@ -2,6 +2,8 @@ from typing import Optional
 from Database.connection import conectar
 from Entities.player import Player
 from Database.equipment_repository import buscar_equipamento
+from Entities.crafting_skill import CraftingSkill
+from Database.crafting_skill_repository import criar_progresso_crafting, carregar_crafting_skill, atualizar_crafting_skill
 
 def criar_player(nome: str, hp: int, hp_maximo: int, mana: int, gold: int, xp: int, xp_para_upar: int,
                   level: int, ataque_base: int, ataque: int, armadura: int, armadura_base: int,
@@ -19,13 +21,20 @@ def criar_player(nome: str, hp: int, hp_maximo: int, mana: int, gold: int, xp: i
     conexao.commit()
     cursor.close()
     conexao.close()
+    criar_progresso_crafting(player_id)
     return player_id
 
 def buscar_player(id_player: int, itens: dict = None) -> Optional[Player]:
     conexao = conectar()
     cursor = conexao.cursor()
 
-    cursor.execute("SELECT * FROM players WHERE id = %s", (id_player,))
+    # lista explicita de colunas (em vez de SELECT *) pra nao quebrar de novo
+    # toda vez que uma coluna nova for adicionada na tabela via ALTER TABLE
+    cursor.execute("""
+        SELECT id, nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level,
+               ataque_base, ataque, armadura, armadura_base, classe_id, gold_banco
+        FROM players WHERE id = %s
+    """, (id_player,))
     linha = cursor.fetchone()
 
     if linha is None:
@@ -33,7 +42,8 @@ def buscar_player(id_player: int, itens: dict = None) -> Optional[Player]:
         conexao.close()
         return None
 
-    id, nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level, ataque_base, ataque, armadura, armadura_base, classe_id = linha
+    (id, nome, hp, hp_maximo, mana, gold, xp, xp_para_upar, level,
+     ataque_base, ataque, armadura, armadura_base, classe_id, gold_banco) = linha
 
     cursor.execute("""
     SELECT hp_regen_base, hp_regen_por_nivel, mana_regen_base, mana_regen_por_nivel
@@ -52,6 +62,7 @@ def buscar_player(id_player: int, itens: dict = None) -> Optional[Player]:
     player.xp_para_upar = xp_para_upar
     player.ataque = ataque
     player.armadura = armadura
+    player.gold_banco = gold_banco
 
     if itens is not None:
         equipados = buscar_equipamento(id)
@@ -65,6 +76,8 @@ def buscar_player(id_player: int, itens: dict = None) -> Optional[Player]:
         if equipados:
             player.atualizar_status()
 
+    crafting_data = carregar_crafting_skill(id)
+    player.crafting_skill = CraftingSkill(crafting_data["nivel"], crafting_data["xp"])
     return player
 
 def update_player(id_player: int, gold: int, level: int, xp: int) -> None:
@@ -102,12 +115,15 @@ def salvar_player(player: Player, player_id: int) -> None:
     cursor.execute("""
         UPDATE players SET
             hp = %s, hp_maximo = %s, mana = %s, gold = %s, xp = %s,
-            level = %s, ataque_base = %s, ataque = %s, armadura = %s, armadura_base = %s
+            level = %s, ataque_base = %s, ataque = %s, armadura = %s, armadura_base = %s,
+            gold_banco = %s
         WHERE id = %s
     """, (player.hp, player.hp_maximo, player.mana, player.gold, player.xp,
-          player.level, player.ataque_base, player.ataque, player.armadura, player.armadura_base,
+          player.level, player.ataque_base, player.ataque, player.armadura, player.armadura_base, player.gold_banco,
           player_id))
 
     conexao.commit()
     cursor.close()
     conexao.close()
+
+    atualizar_crafting_skill(player_id, player.crafting_skill.nivel, player.crafting_skill.xp)
