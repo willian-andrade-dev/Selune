@@ -447,7 +447,7 @@ class EventoCura:
     MALDICAO_DURACAO_TURNOS = 3
     BUFF_DURACAO_TURNOS = 3
 
-    def __init__(self, player, nome_evento, monstros_disponivels, localizacao, habilidade, ler_opcao):
+    def __init__(self, player, nome_evento, monstros_disponiveis, localizacao, habilidades, ler_opcao):
         self.player = player
         self.nome_evento = nome_evento
         self.monstros_disponiveis = monstros_disponiveis
