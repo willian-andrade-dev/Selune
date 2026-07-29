@@ -179,13 +179,15 @@ Isso cria o banco PostgreSQL, executa `postgre.sql` e `seed_data.sql` automatica
 
 - Criação e login de personagem (progresso salvo no banco)
 - Sistema de combate por turnos
+- Exploração conta com eventos randômicos que podem acontecer enquanto explora, sendo positivos ou negativos
 - Ganho de XP, ouro e itens ao derrotar monstros
 - Sistema de level up (aumenta ataque e HP máximo)
 - Inventário persistente
 - Loja para compra e venda de itens (preços calculados automaticamente por trigger)
-- Sistema de equipamento (arma, armadura, acessório)
+- Sistema de equipamento com efeitos aplicados (arma, armadura, acessório)
 - Uso de itens (cura, equipar) com efeitos distintos por tipo (polimorfismo)
 - Monstros distribuídos por região (relação muitos-para-muitos)
+- Sistema de Crafting
 - Registro de logs de combate para análise de dados
 
 ## Analytics (Engenharia de Dados)
@@ -244,5 +246,4 @@ dbt test
 Projeto em desenvolvimento contínuo. Próximos passos incluem:
 - Orquestração da camada de analytics via Airflow
 - Containerização do Spark e dbt (hoje rodam localmente, fora do Docker Compose)
-- Aplicar os bônus de `item_effects` (crítico, resistências, etc.) aos status do player ao equipar
-- NPCs e sistema de crafting
+- NPCs
