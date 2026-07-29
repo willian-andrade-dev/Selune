@@ -12,9 +12,10 @@ CATEGORIAS_COMPRAVEIS = ["Arma", "Armadura", "Consumivel", "Acessorio"]
 
 
 class Shop:
-    def __init__(self, player: Player, player_id: int):
+    def __init__(self, player: Player, player_id: int, itens: dict):
         self.player = player
         self.player_id = player_id
+        self.itens = itens
 
     def _clear(self) -> None:
         os.system("cls" if os.name == "nt" else "clear")
@@ -144,6 +145,9 @@ class Shop:
         print(mensagem)
         if sucesso:
             self.player.gold -= gold_gasto
+            item_obj = self.itens.get(item["item_id"])
+            for _ in range(quantidade):
+                self.player.inventario.adicionar_item(item_obj)
         self._pausar()
 
     def _vender(self) -> None:
@@ -187,6 +191,9 @@ class Shop:
         print(mensagem)
         if sucesso:
             self.player.gold += gold_ganho
+            item_obj = self.itens.get(item["item_id"])
+            for _ in range(quantidade):
+                self.player.inventario.remover_item(item_obj)
         self._pausar()
 
     def abrir(self: "Shop") -> None:

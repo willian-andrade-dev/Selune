@@ -312,7 +312,7 @@ class Game:
                 elif option == 3:
                     self.menu_inventario(player, player_id)
                 elif option == 4:
-                    Shop(player, player_id).abrir()
+                    Shop(player, player_id, self.itens).abrir()
                     salvar_player(player, player_id)
                 elif option == 5:
                     CityMenu(self.cidades, player, player_id, self.receitas_por_item).abrir()
