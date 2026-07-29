@@ -13,6 +13,20 @@ from Systems.character_creation import CharacterCreation
 from Database.equipment_repository import desequipar_item
 from Systems.city import CityMenu
 from Database.city_repository import carregar_cidades
+from Database.recipe_repository import carregar_receitas
+from Systems.exploration_events import (
+    sortear_evento,
+    EventoCombateDireto,
+    EventoAcampamento,
+    EventoDescanso,
+    EventoColeta,
+    EventoAchado,
+    EventoInvestigacao,
+    EventoPegadas,
+    EventoRisco,
+    EventoPortal,
+    EventoCura
+)
 import os
 
 from typing import TYPE_CHECKING
@@ -31,6 +45,7 @@ class Game:
         self.cidades = carregar_cidades()
         self.exploration = Exploration(self.localizacoes, self.monstros)
         self.character_creation = CharacterCreation(self.itens)
+        self.receitas_por_item = carregar_receitas(self.itens)
 
     def limpar_tela(self: 'Game') -> None:
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -179,14 +194,7 @@ class Game:
                 if localizacao is None:
                     continue
 
-                monstro_escolhido = self.exploration.sortear_monstro(localizacao)
-                if monstro_escolhido is None:
-                    print(f"Nenhum monstro encontrado em {localizacao.nome}.")
-                    input("\nPressione Enter para continuar...")
-                    continue
-
-                combate = Combat(player, monstro_escolhido, localizacao, self.habilidades)
-                combate.start()
+                self._processar_evento(player, localizacao)
                 salvar_player(player, player_id)
                 input("\nPressione Enter para continuar...")
 
@@ -197,6 +205,52 @@ class Game:
 
             else:
                 break
+
+    def _processar_evento(self, player, localizacao) -> None:
+        evento = sortear_evento(localizacao)
+        if evento is None:
+            print(f"Nada de interessante em {localizacao.nome} por enquanto.")
+            return
+
+        _, nome_evento, tipo_evento, _ = evento
+        ler_opcao_wrapper = lambda mi, ma: self.ler_opcao("Escolha uma opção: ", mi, ma)
+
+        if tipo_evento == 'combate_direto':
+            monstro_escolhido = self.exploration.sortear_monstro(localizacao)
+            if monstro_escolhido is None:
+                print(f"Nenhum monstro encontrado em {localizacao.nome}.")
+                return
+            EventoCombateDireto(player, monstro_escolhido, localizacao, self.habilidades).iniciar()
+
+        elif tipo_evento == 'acampamento':
+            EventoAcampamento(player, self.monstros, localizacao, self.habilidades, ler_opcao_wrapper).iniciar()
+
+        elif tipo_evento == 'descanso':
+            EventoDescanso(player, self.monstros, localizacao, self.habilidades, ler_opcao_wrapper).iniciar()
+
+        elif tipo_evento == 'coleta':
+            EventoColeta(player, nome_evento, self.monstros, localizacao, self.habilidades, ler_opcao_wrapper).iniciar()
+
+        elif tipo_evento == 'achado':
+            EventoAchado(player, nome_evento, localizacao, ler_opcao_wrapper).iniciar()
+
+        elif tipo_evento == 'pegadas':
+            EventoPegadas(player, self.monstros, localizacao, self.habilidades, ler_opcao_wrapper).iniciar()
+
+        elif tipo_evento == 'investigacao':
+            EventoInvestigacao(player, nome_evento, self.monstros, localizacao, self.habilidades, ler_opcao_wrapper).iniciar()
+
+        elif tipo_evento == 'risco':
+            EventoRisco(player, nome_evento, localizacao).iniciar()
+
+        elif tipo_evento == 'portal':
+            EventoPortal(player, self.monstros, self.localizacoes, localizacao, self.habilidades, ler_opcao_wrapper).iniciar()
+
+        elif tipo_evento == 'cura':
+            EventoCura(player, nome_evento, self.monstros, localizacao, self.habilidades, ler_opcao_wrapper).iniciar()
+
+        else:
+            print(f"Evento desconhecido: {nome_evento}")
 
     def ler_opcao(self: 'Game', mensagem: str, minimo: int, maximo: int) -> int:
         while True:
@@ -261,7 +315,8 @@ class Game:
                     Shop(player, player_id).abrir()
                     salvar_player(player, player_id)
                 elif option == 5:
-                    CityMenu(self.cidades).abrir()
+                    CityMenu(self.cidades, player, player_id, self.receitas_por_item).abrir()
+                    salvar_player(player, player_id)
                 elif option == 6:
                     print(f"See you later, {player.nome}")
                     jogando = False

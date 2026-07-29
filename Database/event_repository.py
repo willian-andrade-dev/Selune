@@ -15,15 +15,22 @@ def carregar_eventos_localizacao(location_id: int) -> list[tuple[int, str, str, 
     conexao.close()
     return linhas
 
-def sortear_material(raridade: str) -> tuple[int, str] | None:
+def sortear_material(raridade: str, familia: str | None = None) -> tuple[int, str] | None:
     """Sorteia um item Loot/Material da raridade informada. Retorna (id, nome) ou None."""
     conexao = conectar()
     cursor = conexao.cursor()
-    cursor.execute("""
-        SELECT id, nome FROM items
-        WHERE tipo = 'Loot' AND subtipo = 'Material' AND raridade = %s
-        ORDER BY RANDOM() LIMIT 1
-    """, (raridade,))
+    if familia is not None:
+        cursor.execute("""
+            SELECT id, nome FROM items
+            WHERE tipo = 'Loot' AND subtipo = 'Material' AND raridade = %s AND familia_material = %s
+            ORDER BY RANDOM() LIMIT 1
+        """, (raridade, familia))
+    else:
+        cursor.execute("""
+            SELECT id, nome FROM items
+            WHERE tipo = 'Loot' AND subtipo = 'Material' AND raridade = %s
+            ORDER BY RANDOM() LIMIT 1
+        """, (raridade,))
     linha = cursor.fetchone()
     cursor.close()
     conexao.close()

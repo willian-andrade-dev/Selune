@@ -441,6 +441,79 @@ INSERT INTO items (nome, tipo, valor, nivel_requerido, descricao, funcao, dano, 
 ('Elmo de Cavaleiro da Morte', 'Loot', 6500, 90, 'Elmo enegrecido de um cavaleiro amaldiçoado.', NULL, NULL, NULL, 'Mítico', NULL),
 ('Escama de Dragão Ancião', 'Loot', 9000, 100, 'Escama de um dos dragões mais antigos do mundo.', NULL, NULL, NULL, 'Artefato', NULL);
 
+-- ===== LOOT DE CRAFTING: COMUM =====
+INSERT INTO items (nome, tipo, valor, nivel_requerido, descricao, funcao, dano, armadura, raridade, subtipo) VALUES
+('Minério de Cobre', 'Loot', 15, 1, 'Pedaço bruto de cobre, extraído de veios rasos.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Minério de Estanho', 'Loot', 18, 2, 'Minério leve, usado junto ao cobre para ligas antigas.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Madeira de Carvalho', 'Loot', 21, 2, 'Tora resistente de carvalho, boa para cabos e hastes.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Couro Curado', 'Loot', 24, 3, 'Couro tratado, pronto para costura em armaduras leves.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Barbante', 'Loot', 27, 3, 'Fio resistente, usado para amarrar pingentes e enfeites.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Pedra Comum', 'Loot', 30, 4, 'Pedra polida sem propriedades mágicas aparentes.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Bronze', 'Loot', 33, 5, 'Liga metálica de cobre e estanho, já fundida.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Linha de Seda', 'Loot', 36, 5, 'Fio fino e forte, tecido a partir de casulos selecionados.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Erva Medicinal', 'Loot', 39, 6, 'Planta comum com propriedades curativas leves.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Água Pura', 'Loot', 42, 6, 'Água filtrada de nascente, base para poções simples.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Frasco', 'Loot', 45, 7, 'Frasco de vidro para engarrafar poções.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Frasco Vazio', 'Loot', 48, 8, 'Frasco limpo, ainda sem conteúdo.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Flor Solar', 'Loot', 51, 8, 'Flor amarela que se abre ao nascer do sol.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Casca de Árvore', 'Loot', 54, 9, 'Casca resistente, usada em preparos revigorantes.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Trevo Dourado', 'Loot', 57, 9, 'Trevo raro de tom dourado, dizem que traz sorte.', NULL, NULL, NULL, 'Comum', 'Material'),
+('Hortelã Selvagem', 'Loot', 60, 10, 'Erva aromática que cresce livremente em campos abertos.', NULL, NULL, NULL, 'Comum', 'Material');
+
+-- ===== LOOT DE CRAFTING: INCOMUM =====
+INSERT INTO items (nome, tipo, valor, nivel_requerido, descricao, funcao, dano, armadura, raridade, subtipo) VALUES
+('Minério de Ferro', 'Loot', 70, 10, 'Minério pesado, base de quase todo equipamento militar.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Madeira Negra', 'Loot', 83, 11, 'Madeira escurecida e mais densa que a comum.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Corrente', 'Loot', 97, 12, 'Elos de metal forjados para cotas de malha.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Resina', 'Loot', 110, 12, 'Seiva endurecida, usada para reforçar couro.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Musgo Ancião', 'Loot', 123, 13, 'Musgo que cresce há décadas sobre pedras antigas.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Erva Revigorante', 'Loot', 137, 14, 'Planta que acelera a recuperação do corpo.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Mel Silvestre', 'Loot', 150, 15, 'Mel colhido de colmeias selvagens, muito energético.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Muco Pegajoso', 'Loot', 163, 16, 'Secreção viscosa usada como base de venenos.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Óleo Vegetal', 'Loot', 177, 17, 'Óleo extraído de sementes, base para óleos de arma.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Pergaminho', 'Loot', 190, 18, 'Pergaminho em branco, pronto para ser encantado.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Pergaminho Antigo', 'Loot', 203, 18, 'Pergaminho desgastado com traços de magia residual.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Runa Quebrada', 'Loot', 217, 19, 'Fragmento de uma runa maior, ainda pulsando fracamente.', NULL, NULL, NULL, 'Incomum', 'Material'),
+('Quartzo', 'Loot', 230, 20, 'Cristal comum, usado como base para encantamentos simples.', NULL, NULL, NULL, 'Incomum', 'Material');
+
+-- ===== LOOT DE CRAFTING: RARO =====
+INSERT INTO items (nome, tipo, valor, nivel_requerido, descricao, funcao, dano, armadura, raridade, subtipo) VALUES
+('Minério de Aço', 'Loot', 280, 20, 'Minério já tratado, pronto para forja de aço.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Carvão Mineral', 'Loot', 303, 21, 'Combustível denso, essencial para fornalhas de forja.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Prata', 'Loot', 326, 22, 'Metal nobre, eficaz contra criaturas amaldiçoadas.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Safira', 'Loot', 349, 23, 'Pedra azul de corte lapidado, associada ao gelo.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Esmeralda', 'Loot', 372, 24, 'Pedra verde vibrante, associada à natureza.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Rubi', 'Loot', 396, 25, 'Pedra vermelha intensa, associada ao fogo.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Ônix', 'Loot', 419, 26, 'Pedra negra opaca, associada às trevas.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Quartzo Arcano', 'Loot', 442, 27, 'Cristal imbuído de energia mágica latente.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Pó Arcano', 'Loot', 465, 28, 'Pó fino que emite um brilho azulado tênue.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Flor Lunar', 'Loot', 488, 28, 'Flor que só desabrocha sob a luz da lua.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Flor de Sangue', 'Loot', 511, 29, 'Flor vermelho-escura, associada à vitalidade.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Essência Vital', 'Loot', 534, 30, 'Essência concentrada de força vital.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Fruta Rubra', 'Loot', 558, 31, 'Fruta rara que fortalece quem a consome.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Cristal Azul', 'Loot', 581, 32, 'Cristal translúcido usado em encantamentos protetores.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Pedra da Lua', 'Loot', 604, 33, 'Pedra pálida que armazena energia lunar.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Lírio Azul', 'Loot', 627, 34, 'Flor sagrada usada em rituais de purificação.', NULL, NULL, NULL, 'Raro', 'Material'),
+('Runa Completa', 'Loot', 650, 35, 'Runa reconstituída a partir de três fragmentos.', NULL, NULL, NULL, 'Raro', 'Material');
+
+-- ===== LOOT DE CRAFTING: ÉPICO =====
+INSERT INTO items (nome, tipo, valor, nivel_requerido, descricao, funcao, dano, armadura, raridade, subtipo) VALUES
+('Mithril', 'Loot', 750, 40, 'Metal raro e leve, mais forte que qualquer aço.', NULL, NULL, NULL, 'Épico', 'Material'),
+('Água Benta', 'Loot', 892, 42, 'Água abençoada por um clérigo, usada em rituais sagrados.', NULL, NULL, NULL, 'Épico', 'Material'),
+('Fragmento Espiritual', 'Loot', 1033, 45, 'Fragmento de energia espiritual condensada.', NULL, NULL, NULL, 'Épico', 'Material'),
+('Núcleo Mágico', 'Loot', 1175, 48, 'Núcleo cristalizado de pura energia arcana.', NULL, NULL, NULL, 'Épico', 'Material'),
+('Diamante Bruto', 'Loot', 1317, 50, 'Diamante ainda não lapidado, denso em energia.', NULL, NULL, NULL, 'Épico', 'Material'),
+('Essência Flamejante', 'Loot', 1458, 52, 'Essência que arde sem se consumir.', NULL, NULL, NULL, 'Épico', 'Material'),
+('Essência Gélida', 'Loot', 1600, 55, 'Essência que nunca perde seu frio glacial.', NULL, NULL, NULL, 'Épico', 'Material');
+
+-- ===== LOOT DE CRAFTING: LENDÁRIO =====
+INSERT INTO items (nome, tipo, valor, nivel_requerido, descricao, funcao, dano, armadura, raridade, subtipo) VALUES
+('Adamantita', 'Loot', 1900, 58, 'Metal quase indestrutível, forjado sob pressões extremas.', NULL, NULL, NULL, 'Lendário', 'Material'),
+('Escama de Dragão', 'Loot', 2325, 62, 'Escama resistente de um dragão jovem.', NULL, NULL, NULL, 'Lendário', 'Material'),
+('Diamante', 'Loot', 2750, 66, 'Diamante lapidado, símbolo de poder e riqueza.', NULL, NULL, NULL, 'Lendário', 'Material'),
+('Essência Celestial', 'Loot', 3175, 69, 'Essência pura vinda de planos superiores.', NULL, NULL, NULL, 'Lendário', 'Material'),
+('Essência Sombria', 'Loot', 3600, 73, 'Essência corrompida por trevas antigas.', NULL, NULL, NULL, 'Lendário', 'Material');
+
 -- ================= MONSTERS =================
 INSERT INTO monsters (nome, hp, ataque, xp, ouro) VALUES
 ('Coelho Selvagem', 15, 3, 5, 2),
@@ -731,3 +804,200 @@ INSERT INTO items (nome, tipo, valor, nivel_requerido, raridade, descricao, dano
 ('Cajado Iniciante', 'Arma', 25, 1, 'Comum', 'Cajado simples que canaliza magia básica.', 6),
 ('Arco Curto', 'Arma', 25, 1, 'Comum', 'Arco leve usado por arqueiros iniciantes.', 5),
 ('Talismã Sagrado', 'Arma', 25, 1, 'Comum', 'Talismã abençoado usado por clérigos novatos.', 4);
+
+-- ================= CIDADES =================
+INSERT INTO cidades (nome, regiao, descricao) VALUES
+('Elaris', 'Planície', 'Capital das Planícies Centrais, conhecida por seus mercados movimentados.'),
+('Valdoren', 'Floresta', 'Cidade élfica erguida entre as árvores da Floresta Sombria.'),
+('Khar-Dûm', 'Montanha', 'Fortaleza anã escavada nas Montanhas, famosa por sua ferraria.'),
+('Sah''Rakar', 'Deserto', 'Cidade-oásis no coração do Deserto Ardente.'),
+('Nocthar', 'Ruínas', 'Assentamento erguido sobre as Ruínas Amaldiçoadas, envolto em mistério.');
+
+-- ================= EVENTOS =================
+
+INSERT INTO events (nome, tipo) VALUES
+('Combate Direto', 'combate_direto'),
+('Acampamento Inimigo', 'acampamento'),
+('Descanso', 'descanso'),
+('Coleta', 'coleta');
+('Baú', 'achado'),
+('Saco Abandonado', 'achado'),
+('Câmara do Tesouro', 'achado'),
+('Estátua', 'achado');
+('Veio de Minério', 'coleta'),
+('Cristais Raros', 'coleta'),
+('Cristais de Gelo', 'coleta'),
+('Cristais de Magma', 'coleta');
+('Pegadas', 'pegadas'),
+('Eco Misterioso', 'investigacao'),
+('Sala Secreta', 'achado'),
+('Ruínas', 'investigacao');
+('Armadilha', 'risco'),
+('Lava Ativa', 'risco'),
+('Gêiser de Magma', 'risco'),
+('Rocha Vulcânica', 'risco'),
+('Portal', 'portal');
+('Altar Antigo', 'cura'),
+('Fonte Mágica', 'cura'),
+('Santuário', 'cura');
+
+-- ================= LOCATION EVENTS =================
+
+INSERT INTO location_events (location_id, event_id, peso) VALUES
+-- Pradaria Inicial (ND 1) — zona tranquila, pouco acampamento
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Combate Direto'), 45),
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 8),
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Descanso'), 22),
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Coleta'), 25),
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Baú'), 10),
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 10),
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Pegadas'), 10),
+((SELECT id FROM locations WHERE nome='Pradaria Inicial'), (SELECT id FROM events WHERE nome='Armadilha'), 10),
+
+-- Floresta Sombria (ND 2) — tema de "Acampamento Goblin", muita coleta (ervas/cogumelos/árvore)
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Combate Direto'), 42),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 13),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Descanso'), 15),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Coleta'), 30),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Baú'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Estátua'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Câmara do Tesouro'), 1),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Madeira/Resina de Árvore Gigante'), 1),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Pegadas'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Eco Misterioso'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Sala Secreta'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Ruínas'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Armadilha'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Altar Antigo'), 8),
+((SELECT id FROM locations WHERE nome='Floresta Sombria'), (SELECT id FROM events WHERE nome='Santuário'), 1),
+
+-- Colinas Rochosas (ND 3) — mina/veio de minério, acampamento de bandidos
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Combate Direto'), 48),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 12),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Descanso'), 10),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Coleta'), 30),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Baú'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Câmara do Tesouro'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Veio de Minério'), 12),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Cristais Raros'), 1),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Cristais de Gelo'), 1),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Veio de Gemas'), 1),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Pegadas'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Eco Misterioso'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Sala Secreta'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Ruínas'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Armadilha'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Fonte Mágica'), 8),
+((SELECT id FROM locations WHERE nome='Colinas Rochosas'), (SELECT id FROM events WHERE nome='Altar Antigo'), 8),
+
+-- Pântano Nebuloso (ND 4) — ervas raras, sem flavor de acampamento nos eventos citados
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Combate Direto'), 50),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 8),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Descanso'), 12),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Coleta'), 30),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Baú'), 8),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 8),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Estátua'), 8),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Madeira/Resina de Árvore Gigante'), 2);
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Pegadas'), 14),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Eco Misterioso'), 8),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Ruínas'), 8),
+((SELECT id FROM locations WHERE nome='Pântano Nebuloso'), (SELECT id FROM events WHERE nome='Armadilha'), 8),
+
+-- Masmorra Abandonada (ND 5) — esqueleto/zumbi combinam com acampamento; pouca coleta natural
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Combate Direto'), 55),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 15),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Descanso'), 10),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Coleta'), 20),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Baú'), 15),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 18),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Câmara do Tesouro'), 15),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Armadilha'), 14),
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Portal'), 2),
+
+-- Deserto Ardente (ND 6) — ladrão do deserto é literalmente do bioma
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Combate Direto'), 50),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 15),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Descanso'), 10),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Coleta'), 25),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Baú'), 8),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 8),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Pegadas'), 8),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Ruínas'), 8),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Armadilha'), 8),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Fonte Mágica'), 8),
+((SELECT id FROM locations WHERE nome='Deserto Ardente'), (SELECT id FROM events WHERE nome='Santuário'), 3),
+
+-- Montanhas Geladas (ND 7) — cristais de gelo = coleta; clima hostil, pouco acampamento
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Combate Direto'), 50),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 10),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Descanso'), 15),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Coleta'), 25),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Baú'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Câmara do Tesouro'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Veio de Minério'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Cristais Raros'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Cristais de Gelo'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Veio de Gemas'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Pegadas'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Eco Misterioso'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Sala Secreta'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Ruínas'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Armadilha'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Fonte Mágica'), 8),
+((SELECT id FROM locations WHERE nome='Montanhas Geladas'), (SELECT id FROM events WHERE nome='Altar Antigo'), 8),
+
+-- Caverna de Cristal (ND 8) — cristais raros/veio de gemas = coleta; monstros, não bandidos
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Combate Direto'), 55),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Descanso'), 12),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Coleta'), 25),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Baú'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Câmara do Tesouro'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Veio de Minério'), 12),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Cristais Raros'), 16),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Cristais de Gelo'), 16),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Veio de Gemas'), 12),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Pegadas'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Eco Misterioso'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Sala Secreta'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Ruínas'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Armadilha'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Fonte Mágica'), 8),
+((SELECT id FROM locations WHERE nome='Caverna de Cristal'), (SELECT id FROM events WHERE nome='Altar Antigo'), 8),
+
+-- Vulcão Adormecido (ND 9) — hostil demais pra descansar/coletar à vontade
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Combate Direto'), 60),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 10),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Descanso'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Coleta'), 22),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Baú'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Estátua'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Câmara do Tesouro'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Cristais de Magma'), 10);
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Sala Secreta'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Ruínas'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Armadilha'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Lava Ativa'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Gêiser de Magma'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Rocha Vulcânica'), 8),
+((SELECT id FROM locations WHERE nome='Vulcão Adormecido'), (SELECT id FROM events WHERE nome='Altar Antigo'), 8),
+
+-- Ruínas Amaldiçoadas (ND 10) — endgame, esqueleto/zumbi combinam com acampamento, pouco espaço pra coleta
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Combate Direto'), 60),
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Acampamento Inimigo'), 12),
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Descanso'), 8),
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Coleta'), 20);
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Baú'), 15),
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Saco Abandonado'), 18),
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Câmara do Tesouro'), 15);
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Ruínas'), 8);
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Armadilha'), 14),
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Portal'), 2);
+((SELECT id FROM locations WHERE nome='Masmorra Abandonada'), (SELECT id FROM events WHERE nome='Santuário'), 3),
+((SELECT id FROM locations WHERE nome='Ruínas Amaldiçoadas'), (SELECT id FROM events WHERE nome='Santuário'), 3);
